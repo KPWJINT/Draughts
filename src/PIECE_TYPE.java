@@ -1,4 +1,4 @@
 
 public enum PIECE_TYPE {
-	WARRIOR, QUEEEN
+	NORMAL_PIECE, QUEEEN
 }
