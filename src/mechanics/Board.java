@@ -19,11 +19,10 @@ public class Board implements Rules{
 		{
 			whitePlayer[i]= new Piece(PIECE_TYPE.MAN,OWNER.WHITE,i);
 			blackPlayer[i]= new Piece(PIECE_TYPE.MAN,OWNER.BLACK,i);
-		}
-		for(int i=0;i<(this.sizeOfBoard-2)*this.sizeOfBoard/4;++i)
 			board[i]=new Squares(i,whitePlayer[i]);
-		for(int i=this.sizeOfBoard*this.sizeOfBoard/2;i>this.sizeOfBoard*this.sizeOfBoard/2-blackPlayer.length;--i)
-			board[i-1]=new Squares(i-1,blackPlayer[this.sizeOfBoard*this.sizeOfBoard/2-i]);
+			board[this.sizeOfBoard*this.sizeOfBoard/2-i-1]=new Squares(this.sizeOfBoard*this.sizeOfBoard/2-i-1,blackPlayer[this.sizeOfBoard*this.sizeOfBoard/2-i]);						
+		}
+
 		for(int i=this.sizeOfBoard*this.sizeOfBoard/4-1;i<this.sizeOfBoard-(this.sizeOfBoard*this.sizeOfBoard)/4;++i)
 			board[i]= new Squares(i,null);		
 	}
