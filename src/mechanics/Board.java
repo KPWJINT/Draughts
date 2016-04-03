@@ -20,7 +20,7 @@ public class Board implements Rules{
 			whitePlayer[i]= new Piece(PIECE_TYPE.MAN,OWNER.WHITE,i);
 			blackPlayer[i]= new Piece(PIECE_TYPE.MAN,OWNER.BLACK,i);
 			board[i]=new Squares(i,whitePlayer[i]);
-			board[this.sizeOfBoard*this.sizeOfBoard/2-i-1]=new Squares(this.sizeOfBoard*this.sizeOfBoard/2-i-1,blackPlayer[this.sizeOfBoard*this.sizeOfBoard/2-i]);						
+			board[board.length-i-1]=new Squares(this.board.length-i-1,blackPlayer[blackPlayer.length-i-1]);						
 		}
 
 		for(int i=this.sizeOfBoard*this.sizeOfBoard/4-1;i<this.sizeOfBoard-(this.sizeOfBoard*this.sizeOfBoard)/4;++i)
