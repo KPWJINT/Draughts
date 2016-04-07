@@ -12,7 +12,7 @@ public class Board {
 		int square_length = resolution_height/sizeOfBoard;
 		int zero_width = (resolution_width - resolution_height)/2;
 		int width = zero_width;
-		int height = 0;
+		int height = 50;
 		
 		board = new Squares[this.sizeOfBoard*this.sizeOfBoard/2]; // here it would be good to add exception to avoid odd number
 		firstPlayer = new Piece[((this.sizeOfBoard/2)-1)*(this.sizeOfBoard/2)];
