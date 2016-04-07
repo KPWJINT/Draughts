@@ -10,7 +10,8 @@ public class Board {
 
 		this.sizeOfBoard = sizeOfBoard;
 		int square_length = resolution_height/sizeOfBoard;
-		int width = 0;
+		int zero_width = (resolution_width - resolution_height)/2;
+		int width = zero_width;
 		int height = 0;
 		
 		board = new Squares[this.sizeOfBoard*this.sizeOfBoard/2]; // here it would be good to add exception to avoid odd number
@@ -20,13 +21,13 @@ public class Board {
 
 		for(int i = 0; i < sizeOfBoard; i++) {
 			if(i % 2 == 0)
-				width = 0;
+				width = zero_width;
 			else
-				width = square_length;
+				width = zero_width + square_length;
 			
 			for(int j = 0; j < sizeOfBoard/2; j++) {
-				width += square_length*2;
 				board[j + i*(sizeOfBoard/2)] = new Squares(j + i*(sizeOfBoard/2), null, width, height);
+				width += square_length*2;
 			}
 			height += square_length;
 		} // create squares without pieces
