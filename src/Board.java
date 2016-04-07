@@ -6,26 +6,42 @@ public class Board {
 	private Piece[] secondPlayer;
 	private final int sizeOfBoard;
 	
-	public Board(int sizeOfBoard) {
+	public Board(int sizeOfBoard, int resolution_width, int resolution_height) {
 
 		this.sizeOfBoard = sizeOfBoard;
+		int square_length = resolution_height/sizeOfBoard;
+		int width = 0;
+		int height = 0;
 		
 		board = new Squares[this.sizeOfBoard*this.sizeOfBoard/2]; // here it would be good to add exception to avoid odd number
 		firstPlayer = new Piece[((this.sizeOfBoard/2)-1)*(this.sizeOfBoard/2)];
 		secondPlayer = new Piece[((this.sizeOfBoard/2)-1)*(this.sizeOfBoard/2)]; // firstPlayer and second Player arrays need to have the same size
 		
+
+		for(int i = 0; i < sizeOfBoard; i++) {
+			if(i % 2 == 0)
+				width = 0;
+			else
+				width = square_length;
+			
+			for(int j = 0; j < sizeOfBoard/2; j++) {
+				width += square_length*2;
+				board[j + i*(sizeOfBoard/2)] = new Squares(j + i*(sizeOfBoard/2), null, width, height);
+			}
+			height += square_length;
+		} // create squares without pieces
+		
 		for(int i = 0; i < firstPlayer.length; i++) { 
 			firstPlayer[i] = new Piece(i, OWNER.WHITE, PIECE_TYPE.NORMAL_PIECE);
 			secondPlayer[i] = new Piece(i, OWNER.BLACK, PIECE_TYPE.NORMAL_PIECE);
 			
-			board[i] = new Squares(i, firstPlayer[i]);
-			board[board.length-i-1] = new Squares(board.length-i-1, secondPlayer[i]);
+			board[i].setPiece(firstPlayer[i]);
+			board[board.length-i-1].setPiece(secondPlayer[i]);
 		} // create arrays of pieces and crate start squares for this pieces
 		
-		for(int i = firstPlayer.length; i < (firstPlayer.length + this.sizeOfBoard); i++) { 
-			board[i] = new Squares(i, null);
-		} // create empty middle squares of board
-		
 	} // constructor
+	
+	public int getSize() {return sizeOfBoard;}
+	public Squares getSquare(int index) {return board[index];}
 	
 }
