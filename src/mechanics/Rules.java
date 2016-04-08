@@ -8,6 +8,9 @@ public interface Rules {
 	public default int[] connectedTo(int squareID, int sizeOfBoard, Squares[] board)//polecam przy analizowaniu zrobiæ sobie schemat planszy :)
 	{
 		int[] result;
+	if(board[squareID].getPiece().getType()==PIECE_TYPE.MAN)
+	{
+		int[] result;
 			if(squareID==0)
 				{int[] temp= {sizeOfBoard/2};result=temp;}//pierwsze pole A1 ma 1 po³¹czenie
 			else if(squareID==board.length-1) // ostatnie pole H8 ma 1 po³¹czenie
@@ -28,7 +31,11 @@ public interface Rules {
 					squareID+sizeOfBoard/2-(squareID/(sizeOfBoard/2))%2,
 					squareID+sizeOfBoard/2-(squareID/(sizeOfBoard/2))%2+1};
 					result=temp;}	
+	}
+	else
+		
 		return result;
 	}
+
 
 }
