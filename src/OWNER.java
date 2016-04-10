@@ -1,4 +1,6 @@
 
-public enum OWNER {
+public enum OWNER 
+{
+	BLACK, WHITE;
 
 }
