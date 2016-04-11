@@ -44,5 +44,12 @@ public class Board {
 	
 	public int getSize() {return sizeOfBoard;}
 	public Squares getSquare(int index) {return board[index];}
-	
+	public Squares getSquare(Piece piece) {
+		for(int i = 0; i < sizeOfBoard/2; i++)
+			if(board[i].getPiece() == piece)
+				return board[i];
+		return null;
+	}
+	public Piece[] getFirstPlayer(){return firstPlayer;}
+	public Piece[] getSecondPlayer(){return secondPlayer;}
 }

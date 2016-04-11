@@ -19,6 +19,8 @@ public class Frame {
 		Board_label bl = new Board_label(b, square_length);
 		frame.add(bl);
 		
+		Piece_label pl = new Piece_label(b, square_length);
+		frame.add(pl);
 //		Label[] label = new Label[b.getSize()*b.getSize()/2];
 //		for(int i = 0; i < label.length; i++) {
 //			label[i] = new Label(square_length,b.getSquare(i));

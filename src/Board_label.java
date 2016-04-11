@@ -12,7 +12,7 @@ public class Board_label extends JLabel{
 	Image image;
 	Board b;
 	
-	public Board_label(Board b, int square_length ) {
+	public Board_label(Board b, int square_length) {
 		this.b = b;
 
 		try{
@@ -21,8 +21,6 @@ public class Board_label extends JLabel{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -31,6 +29,4 @@ public class Board_label extends JLabel{
 			}
 		}
 	
-
-
 }
