@@ -16,8 +16,8 @@ public class Frame {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Board b = new Board(10, (int)tk.getScreenSize().getWidth(), (int)tk.getScreenSize().getHeight()-200);
 		int square_length = (tk.getScreenSize().height-200)/b.getSize();
-		Board_label bl = new Board_label(b, square_length);
-		frame.add(bl);
+		//Board_label bl = new Board_label(b, square_length);
+		//frame.add(bl);
 		
 		Piece_label pl = new Piece_label(b, square_length);
 		frame.add(pl);
@@ -30,6 +30,6 @@ public class Frame {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frame.setVisible(true);
-
+	//	frame.repaint();
 	}
 }

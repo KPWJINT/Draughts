@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 public class Piece_label extends JLabel{
 	Image imageBlack;
 	Image imageWhite;
+	Image image;
 	Board b;
 	
 	public Piece_label(Board b, int square_length) {
@@ -19,12 +20,17 @@ public class Piece_label extends JLabel{
 			imageWhite = ImageIO.read(new File("C:/Users/Sobczak/KPWJINT/Droughts/Graphics/white.png"));
 			imageBlack = imageBlack.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			imageWhite = imageWhite.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			image = ImageIO.read(new File("C:/Users/Sobczak/KPWJINT/Droughts/Graphics/square.png"));
+			image = image.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void paintComponent(Graphics g) {
+		for(int i = 0; i < b.getSize()*b.getSize()/2; i++) {
+			g.drawImage(image, b.getSquare(i).getWidth(), b.getSquare(i).getHeight(), null);
+		}
 			for(int i = 0; i < b.getSize()*b.getSize()/2; i++) {
 				if(b.getSquare(i).getPiece() != null)
 					if(b.getSquare(i).getPiece().getOwner() == OWNER.BLACK)
