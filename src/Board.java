@@ -7,7 +7,6 @@ public class Board {
 	private final int sizeOfBoard;
 	
 	public Board(int sizeOfBoard, int resolution_width, int resolution_height) {
-
 		this.sizeOfBoard = sizeOfBoard;
 		int square_length = resolution_height/sizeOfBoard;
 		int zero_width = (resolution_width - resolution_height)/2;
