@@ -148,7 +148,7 @@ public class Graphics extends JPanel  implements MouseListener, MouseMotionListe
 					{
 						piece=board.getTable()[i][j].getPiece();
 						board.getTable()[i][j].setPiece(null);
-					}
+					} 
 				}
 			}
 		}
