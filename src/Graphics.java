@@ -3,6 +3,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
@@ -11,11 +12,13 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
-public class Graphics extends JPanel  implements MouseListener
+public class Graphics extends JPanel  implements MouseListener, MouseMotionListener
 {
 	Image image;
 	Image image_black;
 	Image image_white;
+	Image image_trace;
+	
 	Piece piece;
 	Board board;
 	int quantity;
@@ -24,11 +27,16 @@ public class Graphics extends JPanel  implements MouseListener
 	
 	int x;
 	int y;
+	double x_trace;
+	double y_trace;
+	
+	
 	
 	public Graphics(int quantity)
 	{
 		super();
 		addMouseListener(this);
+		addMouseMotionListener(this);
 		
 		this.quantity=quantity;
 		File file=new File("C:/Users/Anna/Desktop/1.png");
@@ -56,6 +64,9 @@ public class Graphics extends JPanel  implements MouseListener
 	{		
 		super.paintComponent(g);
 		Graphics2D g2=(Graphics2D )g;
+		
+		
+		
 		for(int i=0; i<board.getTable().length; i++)
 		{
 			for(int j=0; j<board.getTable()[i].length; j++)
@@ -81,20 +92,24 @@ public class Graphics extends JPanel  implements MouseListener
 					{
 						g2.drawImage(image_white, i*(int)size,  j*(int)size,  (int)size, (int)size, this);	
 						board.getTable()[i][j].getPiece().setLocation(new Point2D.Double(i*(int)size, j*(int)size));
+						board.getTable()[i][j].getPiece().setImage(image_white);
 					}
 					if(board.getTable()[i][j].getPiece().getPlayer().equals(OWNER.BLACK))
 					{
 						g2.drawImage(image_black, i*(int)size,  j*(int)size,  (int)size, (int)size, this);	
 						board.getTable()[i][j].getPiece().setLocation(new Point2D.Double(i*(int)size, j*(int)size));
+						board.getTable()[i][j].getPiece().setImage(image_black);
 					}
 
 				}
 			}
 		}
+		g2.drawImage(image_trace, (int)x_trace, (int)y_trace, (int)size, (int)size, this);		
+	
 	}
 
 	
-	public int getXlocation(int xlocation)
+	public int getXlocation(double xlocation)
 	{
 		for(int i=0; i<quantity; i++)
 		{
@@ -106,7 +121,7 @@ public class Graphics extends JPanel  implements MouseListener
 		return x;
 	}
 	
-	public int getYlocation(int ylocation)
+	public int getYlocation(double ylocation)
 	{
 		for(int i=0; i<quantity; i++)
 		{
@@ -116,13 +131,12 @@ public class Graphics extends JPanel  implements MouseListener
 		return y;
 	}
 
-	public Piece findPawn(Point2D p)
+	public Piece findPiece(Point2D p)
 	{
-		int x=getXlocation((int)p.getX());
-		int y=getYlocation((int)p.getY());
-
+		x=getXlocation(p.getX());
+		y=getYlocation(p.getY());
+		
 		Point2D point=new Point2D.Double(x, y);
-		System.out.println(point);
 		
 		for(int i=0;i<board.getTable().length; i++)
 		{
@@ -142,13 +156,12 @@ public class Graphics extends JPanel  implements MouseListener
 	}
 	
 	
-	public void putPawn(Point2D p)
+	public void putPiece(Point2D p)
 	{
-		int x2=getXlocation((int)p.getX());
-		int y2=getYlocation((int)p.getY());
+		double x2=getXlocation(p.getX());
+		double y2=getYlocation(p.getY());
 
 		Point2D point=new Point2D.Double(x2, y2);
-		System.out.println(point);
 		for(int i=0;i<board.getTable().length; i++)
 		{
 			for(int j=0; j<board.getTable()[i].length; j++)
@@ -157,13 +170,21 @@ public class Graphics extends JPanel  implements MouseListener
 				{
 					piece.setLocation(new Point2D.Double(x2, y2));
 					board.getTable()[i][j].setPiece(piece);
-					
 					repaint();
 					piece=null;
-					
 				}
 			}
 		}
+		
+	}
+	
+	public void tracePiece(Point2D p)
+	{
+		x_trace=p.getX()-size/2;
+		y_trace=p.getY()-size/2;
+		image_trace=piece.getImage();
+		
+		repaint();
 		
 	}
 	
@@ -177,13 +198,15 @@ public class Graphics extends JPanel  implements MouseListener
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
-		findPawn(e.getPoint());	
+		
+		findPiece(e.getPoint());	
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
-		putPawn(e.getPoint());
+		image_trace=null;
+		putPiece(e.getPoint());
 	}
 
 	@Override
@@ -197,19 +220,18 @@ public class Graphics extends JPanel  implements MouseListener
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) 
+	{
+		tracePiece(e.getPoint());
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 		
 }
-/**
-if(board.getTable()[i][j].getPawn()!=null && board.getTable()[i][j].getPawn().getPlayer()==Player.WHITE)
-				{
-					g2.drawImage(image_white, i*(int)size,  j*(int)size,  (int)size, (int)size, this);
-					board.getTable()[i][j].getPawn().setLocation(new Point2D.Double(j*(int)size, i*(int)size));
-				}
-				if(board.getTable()[i][j].getPawn()!=null && board.getTable()[i][j].getPawn().getPlayer()==Player.BLACK)
-				{
-					g2.drawImage(image_black, i*(int)size,  j*(int)size,  (int)size, (int)size, this);
-					board.getTable()[i][j].getPawn().setLocation(new Point2D.Double(j*(int)size, i*(int)size));
-				}
-				else if(board.getTable()[i][j].getPawn()==null)
-					board.getTable()[i][j].setPawn(null);
-**/
