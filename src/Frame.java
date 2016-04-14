@@ -14,7 +14,7 @@ public class Frame {
 		
 		JFrame frame = new JFrame("Draughts game");
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		Board b = new Board(10, (int)tk.getScreenSize().getWidth(), (int)tk.getScreenSize().getHeight()-200);
+		Board b = new Board(20, (int)tk.getScreenSize().getWidth(), (int)tk.getScreenSize().getHeight()-200);
 		int square_length = (tk.getScreenSize().height-200)/b.getSize();
 		//Board_label bl = new Board_label(b, square_length);
 		//frame.add(bl);
