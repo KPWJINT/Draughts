@@ -7,38 +7,16 @@ public class Square {
 		private static Image image = null;
 		private Point2D point;
 		
-		public Square(Piece piece, int ID)
-		{
+		public Square(int ID, Piece piece){
 			this.piece=piece;
 			this.ID=ID;
 		}
 
-		public static void setImage(Image i)
-		{
-			image=i;
-		}
-		public Image getImage()
-		{
-			return image;
-		}
-		public void setPiece(Piece piece)
-		{
-			this.piece=piece;
-		}
-		public Piece getPiece()
-		{
-			return piece;
-		}
-		public int getID()
-		{
-			return ID;
-		}
-		public void setPoint(Point2D p)
-		{
-			point=p;
-		}
-		public Point2D getPoint()
-		{
-			return point;
-		}
+		public static void setImage(Image i){image=i;}
+		public Image getImage(){return image;}
+		public void setPiece(Piece piece){this.piece=piece;}
+		public Piece getPiece(){return piece;}
+		public int getID(){return ID;}
+		public void setPoint(Point2D p){point=p;}
+		public Point2D getPoint(){return point;}
 }
