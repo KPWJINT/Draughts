@@ -1,4 +1,3 @@
-import java.awt.Image;
 import java.awt.geom.Point2D;
 
 public class Piece {
@@ -8,11 +7,10 @@ public class Piece {
 	//private Image image;
 	private Point2D point;
 	
-	public Piece(int ID, OWNER owner, PIECE_TYPE type, Point2D point) {
+	public Piece(int ID, OWNER owner, PIECE_TYPE type) {
 			this.ID = ID;
 			this.owner = owner;
 			this.type = type;
-			this.point = point;
 		} // constructor
 	
 	public int getID() { return ID; }

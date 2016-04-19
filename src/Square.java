@@ -7,11 +7,9 @@ public class Square {
 		private static Image image = null;
 		private Point2D point;
 		
-		public Square(int ID, Piece piece, Point2D point){
-			this.ID=ID;
+		public Square(int ID, Piece piece){
 			this.piece=piece;
-			this.point = point;
-			
+			this.ID=ID;
 		}
 
 		public static void setImage(Image i){image=i;}
