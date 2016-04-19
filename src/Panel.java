@@ -4,17 +4,17 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public class Piece_label extends JLabel{
+public class Panel extends JPanel{
 	Image imageBlack;
 	Image imageWhite;
 	Image image;
 	Board b;
-	
-	public Piece_label(Board b, int square_length) {
-		this.b = b;
 
+	public Panel(Board b, int square_length) {
+		super();
+		
 		try{
 			imageBlack = ImageIO.read(new File("C:/Users/Sobczak/KPWJINT/Droughts/Graphics/black.png"));
 			imageWhite = ImageIO.read(new File("C:/Users/Sobczak/KPWJINT/Droughts/Graphics/white.png"));
@@ -26,17 +26,19 @@ public class Piece_label extends JLabel{
 			e.printStackTrace();
 		}
 	}
-	
-	public void paintComponent(Graphics g) {
-		for(int i = 0; i < b.getSize()*b.getSize()/2; i++) {
-			g.drawImage(image, b.getSquare(i).getWidth(), b.getSquare(i).getHeight(), null);
-		}
+		
+		public void paintComponent(Graphics g) {
 			for(int i = 0; i < b.getSize()*b.getSize()/2; i++) {
-				if(b.getSquare(i).getPiece() != null)
-					if(b.getSquare(i).getPiece().getOwner() == OWNER.BLACK)
-						g.drawImage(imageBlack, b.getSquare(i).getWidth(), b.getSquare(i).getHeight(), null);
-					else
-						g.drawImage(imageWhite, b.getSquare(i).getWidth(), b.getSquare(i).getHeight(), null);
+				g.drawImage(image, b.getSquare(i).getWidth(), b.getSquare(i).getHeight(), null);
 			}
-		}
+				for(int i = 0; i < b.getSize()*b.getSize()/2; i++) {
+					if(b.getSquare(i).getPiece() != null)
+						if(b.getSquare(i).getPiece().getOwner() == OWNER.BLACK)
+							g.drawImage(imageBlack, b.getSquare(i).getWidth(), b.getSquare(i).getHeight(), null);
+						else
+							g.drawImage(imageWhite, b.getSquare(i).getWidth(), b.getSquare(i).getHeight(), null);
+				}
+			}
+	
+	
 }
