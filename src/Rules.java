@@ -1,4 +1,5 @@
-
-public interface Rules {
-
+public abstract class Rules {
+	
+	
+	
 }

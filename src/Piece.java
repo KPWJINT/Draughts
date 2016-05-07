@@ -1,69 +1,27 @@
 import java.awt.Image;
 import java.awt.geom.Point2D;
 
-public class Piece
-{
-	private PIECE_TYPE piece_type;
-	private OWNER player;
-	private int id;
-	Image image;
-	Point2D point;
+public class Piece {
+	private final int ID;
+	private final OWNER owner;
+	private PIECE_TYPE type;
+	private Image image;				// we need this field to set to find image by piece
+	private Point2D point;				// I don't use this 
 	
-	private double x_location;
-	private double y_location; 
+	public Piece(int ID, OWNER owner, PIECE_TYPE type) {
+			this.ID = ID;
+			this.owner = owner;
+			this.type = type;
+		} // constructor
 	
-	public Piece (PIECE_TYPE piece_type, OWNER player, int id)
-	{
-		this.piece_type=piece_type;
-		this.player=player;
-		this.id=id;
-	}
-	public void setLocation(Point2D p)
-	{
-		point=p;
-	}
-	public Point2D getPoint()
-	{
-		return point;
-	}
+	public int getID() { return ID; }
+	public OWNER getOwner() { return owner; }
+	public PIECE_TYPE getType() { return type; }
+	public void setType(PIECE_TYPE type){ this.type = type; }
+	public Point2D getPoint(){ return point; }
+	public void setPoint(Point2D point){ this.point = point; }
 	
-	
-	public void setImage(Image image)
-	{
-		this.image=image;
-	}
-	public Image getImage()
-	{
-		return image;
-	}
-	public void setPiece(PIECE_TYPE piece_type)
-	{
-		this.piece_type=piece_type;
-	}
-
-	public void setPlayer(OWNER player)
-	{
-		this.player=player;
-	}
-	public void setID(int id)
-	{
-		this.id=id;
-	}
-	public PIECE_TYPE getPieceType()
-	{
-		return piece_type;
-	}
-	public OWNER getPlayer()
-	{
-		return player;
-	}
-	public int getID()
-	{
-		return id;
-	}
-
-	public String toString()
-	{
-		return player.toString()+piece_type.toString();
-	}
+	//I added also these methods
+	public Image getImage(){ return image;}
+	public void setImage(Image image){ this.image=image;}
 }

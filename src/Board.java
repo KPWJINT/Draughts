@@ -1,198 +1,33 @@
-import java.awt.Image;
-import java.util.ArrayList;
-
-public class Board 
-{
-	int pawn_white;
-	int pawn_black;
+public class Board{
 	
-	boolean condition;
-	OWNER  player;
+	private Square[] squares;
+	private Piece[] player_white;
+	private Piece[] player_black;
+	private final int size;
 	
-	
-	private Squares[][] board;
-	
-	
-	private ArrayList<Piece> p_white;
-	private ArrayList<Piece> p_black;
-	
-	public Squares[][] getTable()
-	{
-		return board;
-	}
-	public int getPawnWhiteNumbers()
-	{
-		return pawn_white;
-	}
-	public int getPawnBlackNumbers()
-	{
-		return pawn_black;
-	}
-	
-	public Board(int number, Image image, int height, int width )
-	{
+	public Board(int size){
+		this.size = size;
 		
-		player=OWNER.WHITE;
+		squares = new Square[this.size*this.size/2]; // here it would be good to add exception to avoid odd number
+		player_white = new Piece[((this.size/2)-1)*(this.size/2)];
+		player_black = new Piece[((this.size/2)-1)*(this.size/2)]; // player_white and second Player arrays need to have the same size
 		
-		board=new Squares[number][number];
-
-		
-		p_white=new ArrayList<Piece>();
-		p_black=new ArrayList<Piece>();
-		
-		pawn_white= number*(number-2)/4;
-		pawn_black= pawn_white;
-	
-		for(int i=0;i<pawn_white;i++)
-		{
-			p_white.add(new Piece(PIECE_TYPE.WARRIOR,OWNER.WHITE, i));
-			p_black.add(new Piece(PIECE_TYPE.WARRIOR, OWNER.BLACK, i));
-		}
-
-		int id=0;
-		
-		for (int i =0; i<board.length; i++)
-		{
-			for(int j=0; j<board[i].length; j++)
-			{
-				board[i][j]=new Squares(id);
-				id++;
-			}
-		}
-		//there has to be some mistake
-		int m=0;
-		for (int i=0; i<board.length; i++)
-		{
-			for(int j=0; j<board[i].length; j++)
-			{
-				if(i%2==0  && j%2!=0 && m<p_white.size()|| i%2!=0  && j%2==0 && m<p_white.size())
-				{
-					board[i][j].setPiece(p_white.get(m));
-					m++;
-				}
-			}
-		}
-		//or here!
-		int a=0;
-		for (int i=board.length-1; i>-1; i--)
-		{
-			for(int j=board[i].length-1; j>-1; j--)
-			{
-				if(i%2==0  && j%2!=0 && a<p_black.size() || i%2!=0 && j%2==0 && a<p_black.size())
-				{
-					board[i][j].setPiece(p_black.get(a));
-					a++;
-				}
-			}
-		}	
-	}
-	
-	/**
-	
-	//just wrote that- probably it has to be changed-DON'T LOOK AT THIS
-	
-	public boolean check_first(Square s1)
-	{
-		
-		for (int i =0; i<rows; i++)
-		{
-			for(int j=0; j<columns; j++)
-			{
-				if(board[i][j].getID()==s1.getID())
-				{
-					if(board[i][j].getPawn()!=null)
-					{
-						 condition=true;
-					}
-					else
-						condition=false;
-				}
-			}
-		}
-		return condition;
-	}
-	
-	public boolean check_pawn(Pawn pawn)
-	{
-		if(pawn.getPlayer().equals(player))
-		{
-			condition=true;
-		}
-		else
-			condition=false;
-
-		return condition;
-	}
-	
-	public boolean check_second(Square s2)
-	{
-		//empty for now
-		
-		return condition;
-	}
-	
-	
-	public void move(Square s1,Square s2, Pawn pawn)
-	{
-		//some conditions to write
-
-		check_first(s1);
-		check_pawn(pawn);
-		check_second(s2);
-		
-		
-		if(condition==true)
-		{
-			for (int i =0; i<rows; i++)
-			{
-				for(int j=0; j<columns; j++)
-				{
-					if(board[i][j].getID()==s1.getID())
-					{
-						board[i][j].setPawn(null);
-						
-					}
-					if(board[i][j].getID()==s2.getID())
-					{
-						board[i][j].setPawn(pawn);
-						
-					}
-				}
-			}
-		}
-		
-		
-		
-		
-	}
-
-	public void display() 
-	{
-		for (int i =0; i<columns; i++)
-		{   
-			System.out.println("        ");
+		for(int i = 0; i < player_white.length; i++) { 
+			player_white[i] = new Piece(i, OWNER.WHITE, PIECE_TYPE.MAN);
+			player_black[i] = new Piece(i, OWNER.BLACK, PIECE_TYPE.MAN);
 			
-			for(int j=0; j<rows; j++)
-			{
-				System.out.print(board[i][j].getPawn()+" ");
-			}
-		}
-	}
-	
-	
-	
-	
-	public static void main(String[] args)
-	{
+			squares[i] = new Square(i, player_white[i]);
+			squares[squares.length-i-1] = new Square(squares.length-i-1, player_black[i]);
+		} // create arrays of pieces and crate start squares for this pieces
 		
+		for(int i = player_white.length; i < (player_white.length + this.size); i++) { 
+			squares[i] = new Square(i, null);
+		} // create empty middle squares of squares
 		
+	} // constructor
 	
-		
-	}
-	
-	
-	
-	**/
-	
-
+	public int getSize(){return size;}
+	public Square[] getSquares(){return squares;}
+	public Piece[] getPlayer_white(){return player_white;}
+	public Piece[] getPlayer_black(){return player_black;}
 }
