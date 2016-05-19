@@ -11,8 +11,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class Panel extends JPanel  implements MouseListener, MouseMotionListener{
-	Image image_black;
 	Image image_white;
+	Image image_black;
 	Image image_trace;
 	
 	Board board;
@@ -21,36 +21,56 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	double x_trace;
 	double y_trace;
 	
-	
-	
-	public Panel(Board board){
+	public Panel(Board board, int square_length){
 		super();
 		addMouseListener(this);
 		addMouseMotionListener(this);
-
+		
 		this.board = board;
-	
-//		File file=new File("C:/Users/Anna/Desktop/1.png");
-//		File file2=new File("C:/Users/Anna/Desktop/warcaby/czarny.png");
-//		File file3=new File("C:/Users/Anna/Desktop/warcaby/bialy.png");
+		this.picture_size = square_length;
 		try
 		{
-//			image=ImageIO.read(file);
-//			image_white=ImageIO.read(file3);
-//			image_black=ImageIO.read(file2);
-//			this.picture_size=image.getHeight(null)/2;
+			Image image_square = ImageIO.read(new File("Graphics/square.png"));
+			image_white = ImageIO.read(new File("Graphics/white.png"));
+			image_black = ImageIO.read(new File("Graphics/black.png"));
+			
+			image_square = image_square.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			image_white = image_white.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			image_black = image_black.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			
+			Square.setImage(image_square);		
 		}
 		catch (IOException e)
 		{
 			System.err.println("Picture not found 404");
 			e.printStackTrace();
 		}
+		
+		
+		double width = 0;
+		double height = 0;
+		for(int i = 0; i < board.getSize(); i++){
+			if(i % 2 == 0)
+				width = 0;
+			else
+				width = 0 + square_length;
+			
+			for(int j = 0; j < board.getSize()/2; j++){
+				board.getSquares()[j + i*(board.getSize()/2)].setPoint(new Point2D.Double(width, height));
+				width += (double)square_length*2;
+			}
+			height += (double)square_length;
+		}
 	}
-
 	
 	public void paintComponent(java.awt.Graphics g){		
 		super.paintComponent(g);
-		Graphics2D g2=(Graphics2D )g;
+		Graphics2D g2 = (Graphics2D)g;
+		
+		for(int i = 0; i < board.getSquares().length; i++){
+			g2.drawImage(Square.getImage() , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
+		}
+					
 	}
 
 	

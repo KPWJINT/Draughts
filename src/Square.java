@@ -13,7 +13,7 @@ public class Square {
 		}
 
 		public static void setImage(Image i){image=i;}
-		public Image getImage(){return image;}
+		public static Image getImage(){return image;} //change this in Interface branch
 		public void setPiece(Piece piece){this.piece=piece;}
 		public Piece getPiece(){return piece;}
 		public int getID(){	return ID;}
