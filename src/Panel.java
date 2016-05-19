@@ -46,7 +46,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			e.printStackTrace();
 		}
 		
-		
+		// set squares points2D
 		double width = 0;
 		double height = 0;
 		for(int i = 0; i < board.getSize(); i++){
@@ -61,16 +61,53 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			}
 			height += (double)square_length;
 		}
+		
+		// set white pieces points2D
+		height = 0;
+		for(int i = 0; i < (board.getSize()/2)-1; i++){
+			if(i % 2 == 0)
+				width = 0;
+			else
+				width = 0 + square_length;
+			
+			for(int j = 0; j < board.getSize()/2; j++){
+				board.getPlayer_white()[j + i*(board.getSize()/2)].setPoint(new Point2D.Double(width, height));
+				width += (double)square_length*2;
+			}
+			height += (double)square_length;
+		}
+		
+		// set black pieces points2D
+		height = (board.getSize()/2+1)*square_length;
+		for(int i = board.getSize()/2; i < board.getSize()-1; i++){
+			if(i % 2 == 0)
+				width = square_length;
+			else
+				width = 0;
+			
+			for(int j = 0; j < board.getSize()/2; j++){
+				board.getPlayer_black()[j + (i - (board.getSize()/2))*(board.getSize()/2)].setPoint(new Point2D.Double(width, height));
+				width += (double)square_length*2;
+			}
+			height += (double)square_length;
+		}
 	}
 	
 	public void paintComponent(java.awt.Graphics g){		
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D)g;
 		
-		for(int i = 0; i < board.getSquares().length; i++){
+		//draw board
+		for(int i = 0; i < board.getSquares().length; i++)
 			g2.drawImage(Square.getImage() , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
-		}
-					
+		
+		//draw white player pieces
+		for(int i = 0; i < board.getPlayer_white().length; i++)
+			g2.drawImage(image_white , (int)board.getPlayer_white()[i].getPoint().getX(),  (int)board.getPlayer_white()[i].getPoint().getY(), this);
+		
+		//draw black player pieces
+				for(int i = 0; i < board.getPlayer_black().length; i++)
+					g2.drawImage(image_black , (int)board.getPlayer_black()[i].getPoint().getX(),  (int)board.getPlayer_black()[i].getPoint().getY(), this);
 	}
 
 	
