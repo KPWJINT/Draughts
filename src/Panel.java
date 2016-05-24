@@ -147,18 +147,21 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		return piece;
 	}
 	
-	public void putPiece(Point2D p){
+	public boolean putPiece(Point2D p){
 		int x = getXlocation(p.getX());
 		int y = getYlocation(p.getY());
+		boolean isDone = false;
 		
 		Point2D point = new Point2D.Double(x, y);
 		
 		for(int i = 0; i < board.getSquares().length; i++){
 			if(board.getSquares()[i] != null && board.getSquares()[i].getPoint().equals(point)){
 				board.getSquares()[i].setPiece(piece_trace);
+				isDone = true;
 			}
 		}
-	}
+		return isDone;
+	} //set trace_piece at the square at the specified Point2D
 	
 	public void tracePiece(Point2D p){
 		x_trace = p.getX() - picture_size/2;
@@ -178,11 +181,14 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent e) {
 		piece_trace = removePiece(e.getPoint());
+		if(piece_trace != null)
+		piece_trace.setPoint(e.getPoint());			//remember last place
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e){
-		putPiece(e.getPoint());
+		if(!putPiece(e.getPoint()))
+			putPiece(piece_trace.getPoint());
 		piece_trace = null;
 		repaint();
 	}
