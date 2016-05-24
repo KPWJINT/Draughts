@@ -187,10 +187,13 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseReleased(MouseEvent e){
-		if(!putPiece(e.getPoint()))
-			if(piece_trace != null)
+		if(Rules.moveAvalible(board)){
+			if(!putPiece(e.getPoint()) && piece_trace != null)//
+				putPiece(piece_trace.getPoint());
+		}else if(piece_trace != null)
 			putPiece(piece_trace.getPoint());
-		piece_trace = null;
+			
+			piece_trace = null;
 		repaint();
 	}
 
