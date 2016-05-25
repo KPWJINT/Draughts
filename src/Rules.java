@@ -5,10 +5,12 @@ public abstract class Rules {
 	public static boolean moveAvalible(Board board, Square square, Square piece_square ,Piece piece){ //square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 		boolean isAvalible = false;
 		if(board != null && square != null && piece != null && piece_square != null && square.getPiece() == null){ //all arguments are not null and square is empty
-			if(connectedTo(board, square, piece_square))
-				isAvalible = true;
-			if(piece_capture(board, square, piece_square, piece))
-				isAvalible = true;
+			if((piece.getOwner() == OWNER.WHITE && board.getTurn() == true) || piece.getOwner() == OWNER.BLACK && board.getTurn() == false){ //turn condition
+				if(connectedTo(board, square, piece_square))
+					isAvalible = true;
+				if(piece_capture(board, square, piece_square, piece))
+					isAvalible = true;
+			}
 		}
 		
 		//sprawdza jeœli pola s¹ puste, jeœli s¹ zajête przez gracza o przeciwnym kol
@@ -16,7 +18,8 @@ public abstract class Rules {
 		// co mam w bordzie: wszystkie pionki i pola i ich po³o¿enie??
 		
 		
-				
+		if(isAvalible == true)
+			changeTurn(board);
 		return isAvalible;
 	}
 	
@@ -44,8 +47,8 @@ public abstract class Rules {
 					if(board.getSquares()[square.getID()-5].getPiece() != null && board.getSquares()[square.getID()-5].getPiece().getOwner() != piece.getOwner()){
 						board.getSquares()[square.getID()-5].setPiece(null);
 						isCaptured = true;
-					}
 						
+					}
 				}else{
 					if(board.getSquares()[square.getID()-4].getPiece() != null && board.getSquares()[square.getID()-4].getPiece().getOwner() != piece.getOwner()){
 						board.getSquares()[square.getID()-4].setPiece(null);
@@ -58,6 +61,7 @@ public abstract class Rules {
 					if(board.getSquares()[square.getID()-4].getPiece() != null && board.getSquares()[square.getID()-4].getPiece().getOwner() != piece.getOwner()){
 						board.getSquares()[square.getID()-4].setPiece(null);
 						isCaptured = true;
+						
 					}
 				}else{
 					if(board.getSquares()[square.getID()-3].getPiece() != null && board.getSquares()[square.getID()-3].getPiece().getOwner() != piece.getOwner()){
@@ -92,10 +96,14 @@ public abstract class Rules {
 					}	
 				}
 			}
-			
-		}
-		// kod sprawdza czy jest miêdzy tym polem a pocz¹tkowym pionek innego gracza i jeœli tak to ok i usuwa pionek
-				
+		}		
 		return isCaptured;
+	}
+	
+	public static void changeTurn(Board board){
+		if(board.getTurn())
+			board.setTurn(false);
+		else
+			board.setTurn(true);
 	}
 }

@@ -4,9 +4,11 @@ public class Board{
 	private Piece[] player_white;
 	private Piece[] player_black;
 	private final int size;
+	private boolean turn;	//if white player turn = true, if black player turn = false
 	
 	public Board(int size){
 		this.size = size;
+		this.turn = true;
 		
 		squares = new Square[this.size*this.size/2]; // here it would be good to add exception to avoid odd number
 		player_white = new Piece[((this.size/2)-1)*(this.size/2)];
@@ -27,6 +29,8 @@ public class Board{
 	} // constructor
 	
 	public int getSize(){return size;}
+	public boolean getTurn(){return turn;}
+	public void setTurn(boolean turn){this.turn = turn;}
 	public Square[] getSquares(){return squares;}
 	public Piece[] getPlayer_white(){return player_white;}
 	public Piece[] getPlayer_black(){return player_black;}
