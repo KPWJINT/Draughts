@@ -10,9 +10,13 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import com.sun.javafx.scene.control.skin.FXVK.Type;
+
 public class Panel extends JPanel  implements MouseListener, MouseMotionListener{
 	Image image_white;
 	Image image_black;
+	Image image_white_king;
+	Image image_black_king;
 	Image image_trace;
 	
 	Board board;
@@ -34,10 +38,14 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			Image image_square = ImageIO.read(new File("Graphics/square.png"));
 			image_white = ImageIO.read(new File("Graphics/white.png"));
 			image_black = ImageIO.read(new File("Graphics/black.png"));
+			image_white_king = ImageIO.read(new File("Graphics/white_king.png"));
+			image_black_king = ImageIO.read(new File("Graphics/black_king.png"));
 			
 			image_square = image_square.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_white = image_white.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_black = image_black.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			image_white_king = image_white_king.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			image_black_king = image_black_king.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			
 			Square.setImage(image_square);		
 		}
@@ -103,9 +111,15 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			g2.drawImage(Square.getImage() , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
 			if(board.getSquares()[i].getPiece() != null){
 				if(board.getSquares()[i].getPiece().getOwner() == OWNER.WHITE)
-					g2.drawImage(image_white , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
+					if(board.getSquares()[i].getPiece().getType() == PIECE_TYPE.MAN)
+						g2.drawImage(image_white , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
+					else
+						g2.drawImage(image_white_king , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
 				else
-					g2.drawImage(image_black , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
+					if(board.getSquares()[i].getPiece().getType() == PIECE_TYPE.MAN)
+						g2.drawImage(image_black , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
+					else
+						g2.drawImage(image_black_king , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
 			}	
 		}
 			

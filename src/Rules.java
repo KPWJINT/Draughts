@@ -13,8 +13,13 @@ public abstract class Rules {
 			}
 		}
 		
-		if(isAvalible == true)
+		
+		if(isAvalible == true){
 			changeTurn(board);
+			if(achieveLastPool(board, square, piece))
+				piece.setType(PIECE_TYPE.KING);
+		}
+			
 		return isAvalible;
 	}
 	
@@ -31,7 +36,7 @@ public abstract class Rules {
 					if(piece_square.getID() == square.getID() - 4 || piece_square.getID() == square.getID() - 3)
 						connectedTo = true;
 				}
-			}else{
+			}else if(piece.getOwner() == OWNER.BLACK){
 				if(square.getID()/(board.getSize()/2) % 2 == 0){
 					if(piece_square.getID() == square.getID() + 3 || piece_square.getID() == square.getID() + 4)
 						connectedTo = true;
@@ -40,14 +45,6 @@ public abstract class Rules {
 						connectedTo = true;
 				}
 			}
-			
-//			if(square.getID()/(board.getSize()/2) % 2 == 0){
-//				if(piece_square.getID() == square.getID() - 5 || piece_square.getID() == square.getID() - 4 || piece_square.getID() == square.getID() + 3 || piece_square.getID() == square.getID() + 4)
-//					connectedTo = true;
-//			}else{
-//				if(piece_square.getID() == square.getID() - 4 || piece_square.getID() == square.getID() - 3 || piece_square.getID() == square.getID() + 4 || piece_square.getID() == square.getID() + 5)
-//					connectedTo = true;
-//			}
 		}
 		return connectedTo;
 	}
@@ -119,5 +116,22 @@ public abstract class Rules {
 			board.setTurn(false);
 		else
 			board.setTurn(true);
+	}
+	
+	public static boolean achieveLastPool(Board board, Square square, Piece piece){
+		boolean achieve = false;
+		
+		if(piece.getOwner() == OWNER.WHITE){
+			for(int i = ((board.getSize()/2)*(board.getSize()))-board.getSize()/2; i < board.getSquares().length; i++){
+				if(board.getSquares()[i].equals(square))
+					achieve = true;
+			}
+		}else if(piece.getOwner() == OWNER.BLACK){
+			for(int i = 0; i < board.getSize()/2; i++){
+				if(board.getSquares()[i].equals(square))
+					achieve = true;
+			}
+		}
+		return achieve;
 	}
 }
