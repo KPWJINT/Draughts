@@ -36,6 +36,20 @@ public abstract class Rules {
 		return isAvalible;
 	}
 	
+	public static ArrayList<Square> availableSquares(Board board, Square piece_square, Piece piece){
+		ArrayList<Square> availableSquares = new ArrayList<Square>();
+		
+		if(board != null && piece_square != null && piece != null){
+			if(piece.getType() == PIECE_TYPE.MAN){
+				for(int i = 0; i < board.getSquares().length; i++)
+					if(man_move_possible(board, board.getSquares()[i], piece_square, piece) || piece_capture_possible(board, board.getSquares()[i], piece_square, piece))
+						availableSquares.add(board.getSquares()[i]);
+			}
+		}
+			
+		return availableSquares;
+	}
+	
 //	private static boolean king_move_possible(Board board, Square square, Square piece_square, Piece piece){
 //		boolean movePossible = false;
 //		
@@ -67,20 +81,48 @@ public abstract class Rules {
 		
 		if(square.getPiece() == null){
 			if(piece.getOwner() == OWNER.WHITE){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(piece_square.getID() == square.getID() - 5 || piece_square.getID() == square.getID() - 4)
-						movePossible = true;
-				}else{
-					if(piece_square.getID() == square.getID() - 4 || piece_square.getID() == square.getID() - 3)
-						movePossible = true;
+				if(piece_square.getID()/(board.getSize()/2) % 2 == 0){							//even line
+					if(piece_square.getID() % (board.getSize()/2) == 0){						//if piece_square is at the boarder of the board
+						if(square.getID() == piece_square.getID() + 4){
+							movePossible = true;
+						}
+					}else{																		//if piece_square is not at the boarder of the map
+						if(square.getID() == piece_square.getID() + 3 || square.getID() == piece_square.getID() + 4){
+							movePossible = true;
+						}
+					}
+				}else{																			//odd line
+					if(piece_square.getID() % (board.getSize()/2) ==(board.getSize()/2)-1){		//if piece_square is at the boarder of the board
+						if(square.getID() == piece_square.getID() + 4){
+							movePossible = true;
+						}
+					}else{																		//if piece_square is not at the boarder of the map
+						if(square.getID() == piece_square.getID() + 4 || square.getID() == piece_square.getID() + 5){
+							movePossible = true;
+						}
+					}
 				}
 			}else if(piece.getOwner() == OWNER.BLACK){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(piece_square.getID() == square.getID() + 3 || piece_square.getID() == square.getID() + 4)
-						movePossible = true;
-				}else{
-					if(piece_square.getID() == square.getID() + 4 || piece_square.getID() == square.getID() + 5)
-						movePossible = true;
+				if(piece_square.getID()/(board.getSize()/2) % 2 == 0){							//even line
+					if(piece_square.getID() % (board.getSize()/2) == 0){						//if piece_square is at the boarder of the board
+						if(square.getID() == piece_square.getID() - 4){
+							movePossible = true;
+						}
+					}else{																		//if piece_square is not at the boarder of the map
+						if(square.getID() == piece_square.getID() - 5 || square.getID() == piece_square.getID() - 4){
+							movePossible = true;
+						}
+					}
+				}else{																			//odd line
+					if(piece_square.getID() % (board.getSize()/2) ==(board.getSize()/2)-1){		//if piece_square is at the boarder of the board
+						if(square.getID() == piece_square.getID() - 4){
+							movePossible = true;
+						}
+					}else{																		//if piece_square is not at the boarder of the map
+						if(square.getID() == piece_square.getID() - 4 || square.getID() == piece_square.getID() - 3){
+							movePossible = true;
+						}
+					}
 				}
 			}
 		}
@@ -235,19 +277,7 @@ public abstract class Rules {
 	}
 	
 	
-	public static ArrayList<Square> availableSquares(Board board, Square piece_square, Piece piece){
-		ArrayList<Square> availableSquares = new ArrayList<Square>();
-		
-		if(board != null && piece_square != null && piece != null){
-			if(piece.getType() == PIECE_TYPE.MAN){
-				for(int i = 0; i < board.getSquares().length; i++)
-					if(man_move_possible(board, board.getSquares()[i], piece_square, piece) || piece_capture_possible(board, board.getSquares()[i], piece_square, piece))
-						availableSquares.add(board.getSquares()[i]);
-			}
-		}
-			
-		return availableSquares;
-	}
+
 	
 	public static void changeTurn(Board board){
 		if(board.getTurn())

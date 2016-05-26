@@ -222,11 +222,10 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	public void mousePressed(MouseEvent e) {
 		piece_trace = removePiece(e.getPoint());
 		
-		if(piece_trace != null)
-		piece_trace.setPoint(e.getPoint());		//remember last place
-		
-		available_squares.addAll(Rules.availableSquares(board, getSquare(piece_trace.getPoint()), piece_trace));
-		//repaint();
+		if(piece_trace != null){
+			piece_trace.setPoint(e.getPoint());		//remember last place
+			available_squares.addAll(Rules.availableSquares(board, getSquare(piece_trace.getPoint()), piece_trace));
+		}
 	}
 
 	@Override
