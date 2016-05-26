@@ -6,11 +6,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
-import com.sun.javafx.scene.control.skin.FXVK.Type;
 
 public class Panel extends JPanel  implements MouseListener, MouseMotionListener{
 	Image image_white;
@@ -18,10 +17,12 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	Image image_white_king;
 	Image image_black_king;
 	Image image_trace;
+	Image image_avalible;
 	
 	Board board;
 	int picture_size;
 	
+	ArrayList<Square> available_squares = new ArrayList<Square>();
 	Piece piece_trace; // new, piece which is traced
 	double x_trace;
 	double y_trace;
@@ -40,12 +41,14 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			image_black = ImageIO.read(new File("Graphics/black.png"));
 			image_white_king = ImageIO.read(new File("Graphics/white_king.png"));
 			image_black_king = ImageIO.read(new File("Graphics/black_king.png"));
+			image_avalible = ImageIO.read(new File("Graphics/avalible.png"));
 			
 			image_square = image_square.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_white = image_white.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_black = image_black.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_white_king = image_white_king.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_black_king = image_black_king.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			image_avalible = image_avalible.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			
 			Square.setImage(image_square);		
 		}
@@ -122,6 +125,10 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 						g2.drawImage(image_black_king , (int)board.getSquares()[i].getPoint().getX(),  (int)board.getSquares()[i].getPoint().getY(), this);
 			}	
 		}
+		
+		//avalible squares
+		for(int i = 0; i < available_squares.size(); i++)
+			g2.drawImage(image_avalible,(int)available_squares.get(i).getPoint().getX(), (int)available_squares.get(i).getPoint().getY(), this);
 			
 		//image trace
 		if(piece_trace != null)
@@ -181,9 +188,15 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		x_trace = p.getX() - picture_size/2;
 		y_trace = p.getY() - picture_size/2;
 		if(piece_trace.getOwner() == OWNER.BLACK)
-			image_trace = image_black;
+			if(piece_trace.getType() == PIECE_TYPE.MAN)
+				image_trace = image_black;
+			else
+				image_trace = image_black_king;
 		else if(piece_trace.getOwner() == OWNER.WHITE)
-			image_trace = image_white;
+			if(piece_trace.getType() == PIECE_TYPE.MAN)
+				image_trace = image_white;
+			else
+				image_trace = image_white_king;
 			
 		repaint();
 	}
@@ -208,8 +221,12 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent e) {
 		piece_trace = removePiece(e.getPoint());
+		
 		if(piece_trace != null)
-		piece_trace.setPoint(e.getPoint());			//remember last place
+		piece_trace.setPoint(e.getPoint());		//remember last place
+		
+		available_squares.addAll(Rules.availableSquares(board, getSquare(piece_trace.getPoint()), piece_trace));
+		//repaint();
 	}
 
 	@Override
@@ -221,6 +238,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			putPiece(piece_trace.getPoint());
 			
 			piece_trace = null;
+			available_squares.removeAll(available_squares);
 		repaint();
 	}
 
