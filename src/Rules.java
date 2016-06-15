@@ -3,20 +3,54 @@ import java.util.ArrayList;
 //to do:
 //trzeba biæ a jak nie bijesz to tracisz ¿ycie/nie mo¿esz siê ruszyæ
 //czy mo¿na wybraæ ile zbiæ?
-//bicie dla którowej
+//je¿eli podcza bicia przechodzisz przez pole zmiany rodzaju piona to nie zmieniasz rodzaju piona bo to bicie
 //warunek zwyciêstwa
+
+//Methods:
+//moveAvalible
+//avalibleSquares
+//man_move_possible
+//man_capture_possible
+//man capture
+//king_move_possible
+//king_capture_possible
+//king_capture
+//Methods which returns square at the diagonal in the indicated direction (returns null if square out of board)
+//change turn method
+//other method
 
 public abstract class Rules {
 	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
-	public static boolean moveAvalible(Board board, Square square, Square piece_square ,Piece piece){ 		boolean isAvalible = false;
+	public static boolean moveAvalible(Board board, Square square, Square piece_square ,Piece piece){ 		
+		boolean isAvalible = false;
+//		boolean captrurePossible = false;
+
+//		for(int i = 0; i < board.getSquares().length; i++)
+//			for(int j = 0; j < board.getSquares().length; j++){
+//				if(board.getSquares()[i].getPiece() != null && board.getSquares()[i].getPiece().getOwner() == piece.getOwner()){
+//					if(board.getSquares()[i].getPiece().getType() == PIECE_TYPE.MAN){
+//						if(man_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
+//							captrurePossible = true;
+//					} else {
+//						if(king_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
+//							captrurePossible = true;
+//					}	
+//				}	
+//			}
 		
 		if(board != null && square != null && piece != null && piece_square != null && square.getPiece() == null){ 								//all arguments are not null and square is empty
 			if((piece.getOwner() == OWNER.WHITE && board.getTurn() == true) || piece.getOwner() == OWNER.BLACK && board.getTurn() == false){ 	//turn condition
 				if(piece.getType() == PIECE_TYPE.MAN){
+//					if(captrurePossible == true)
+//						if(man_capture(board, square, piece_square, piece))
+//							isAvalible = true;
+//					if(captrurePossible == false)
+//						if(man_move_possible(board, square, piece_square, piece))
+//							isAvalible = true;
 					if(man_move_possible(board, square, piece_square, piece))
 						isAvalible = true;
-					if(piece_capture(board, square, piece_square, piece))
+					if(man_capture(board, square, piece_square, piece))
 						isAvalible = true;
 				}else{
 					if(king_move_possible(board, square, piece_square, piece))
@@ -54,7 +88,82 @@ public abstract class Rules {
 		return availableSquares;
 	}
 	
-	//this method returns true if "piece" at the "piece_square" can move to the "square"
+	//This method returns true if move from piece_square to the square is possible
+	private static boolean man_move_possible(Board board, Square square, Square piece_square, Piece piece){
+		boolean movePossible = false;
+		
+		if(square.getPiece() == null){
+			if(piece.getOwner() == OWNER.WHITE){
+				if(square == field_down_left(board, piece_square) || square == field_down_right(board, piece_square))
+					movePossible = true;
+			}
+			if(piece.getOwner() == OWNER.BLACK){
+				if(square == field_up_left(board, piece_square) || square == field_up_right(board, piece_square))
+					movePossible = true;
+			}
+		}
+		return movePossible;
+	}
+	
+	public static boolean man_capture_possible(Board board, Square square, Square piece_square, Piece piece){
+		boolean capturePossible = false;
+		
+		if(square.getPiece() == null){
+			Square fdl = field_down_left(board, piece_square);
+			Square fdr = field_down_right(board, piece_square);
+			Square ful = field_up_left(board, piece_square);
+			Square fur = field_up_right(board, piece_square);
+			
+			if(fdl != null && fdl.getPiece() != null && fdl.getPiece().getOwner() != piece.getOwner())
+				if(square == field_down_left(board, fdl))
+					capturePossible = true;
+			if(fdr != null && fdr.getPiece() != null && fdr.getPiece().getOwner() != piece.getOwner())
+				if(square == field_down_right(board, fdr))
+					capturePossible = true;
+			if(ful != null && ful.getPiece() != null && ful.getPiece().getOwner() != piece.getOwner())
+				if(square == field_up_left(board, ful))
+					capturePossible = true;
+			if(fur != null && fur.getPiece() != null && fur.getPiece().getOwner() != piece.getOwner())
+				if(square == field_up_right(board, fur))
+					capturePossible = true;
+		}
+		return capturePossible;
+	}
+	
+	public static boolean man_capture(Board board, Square square, Square piece_square, Piece piece){
+		boolean isCaptured = false;
+		
+		if(square.getPiece() == null){
+			Square fdl = field_down_left(board, piece_square);
+			Square fdr = field_down_right(board, piece_square);
+			Square ful = field_up_left(board, piece_square);
+			Square fur = field_up_right(board, piece_square);
+			
+			if(fdl != null && fdl.getPiece() != null && fdl.getPiece().getOwner() != piece.getOwner())
+				if(square == field_down_left(board, fdl)){
+					fdl.setPiece(null);
+					isCaptured = true;
+				}
+			if(fdr != null && fdr.getPiece() != null && fdr.getPiece().getOwner() != piece.getOwner())
+				if(square == field_down_right(board, fdr)){
+					fdr.setPiece(null);
+					isCaptured = true;
+				}
+			if(ful != null && ful.getPiece() != null && ful.getPiece().getOwner() != piece.getOwner())
+				if(square == field_up_left(board, ful)){
+					ful.setPiece(null);
+					isCaptured = true;
+				}
+			if(fur != null && fur.getPiece() != null && fur.getPiece().getOwner() != piece.getOwner())
+				if(square == field_up_right(board, fur)){
+					fur.setPiece(null);
+					isCaptured = true;
+				}		
+		}
+		return isCaptured;
+	}
+	
+	//this method returns true if "piece(king type)" at the "piece_square" can move to the "square"
 	private static boolean king_move_possible(Board board, Square square, Square piece_square, Piece piece){
 		boolean movePossible = false;
 		
@@ -96,257 +205,6 @@ public abstract class Rules {
 
 		return movePossible;
 	}
-	
-	
-	// Methods which returns square at the diagonal in the indicated direction (returns null if square out of board)
-	private static Square field_up_right(Board board, Square square){
-		Square field_up_right = null;
-		
-		if(square != null && square.getID() >= board.getSize()/2 && square.getID() % board.getSize() != board.getSize()-1)	// square exists and it is not at the first row and at the last column
-			if(square.getID()/(board.getSize()/2) % 2 == 0)																	// even row
-				field_up_right = board.getSquares()[square.getID()-4];
-			else																											//odd row
-				field_up_right = board.getSquares()[square.getID()-3];
-						
-		return field_up_right;
-	}
-	
-	private static Square field_up_left(Board board, Square square){
-		Square field_up_left = null;
-		
-		if(square != null && square.getID() >= board.getSize()/2 && square.getID() % board.getSize() != 0)					// square exists and it is not at the first row and at the first column
-			if(square.getID()/(board.getSize()/2) % 2 == 0)																	// even row
-				field_up_left = board.getSquares()[square.getID()-5];
-			else																											//odd row
-				field_up_left = board.getSquares()[square.getID()-4];
-						
-		return field_up_left;
-	}
-	
-	private static Square field_down_right(Board board, Square square){
-		Square field_up_left = null;
-		
-		if(square != null && square.getID() < (board.getSize()-1)*(board.getSize()/2) && square.getID() % board.getSize() != board.getSize()-1)		// square exists and it is not at the last row and at the last column
-			if(square.getID()/(board.getSize()/2) % 2 == 0)																							// even row
-				field_up_left = board.getSquares()[square.getID()+4];
-			else																																	//odd row
-				field_up_left = board.getSquares()[square.getID()+5];
-						
-		return field_up_left;
-	}
-	
-	private static Square field_down_left(Board board, Square square){
-		Square field_up_left = null;
-		
-		if(square != null && square.getID() < (board.getSize()-1)*(board.getSize()/2) && square.getID() % board.getSize() != 0)						// square exists and it is not at the last row and at the first column
-			if(square.getID()/(board.getSize()/2) % 2 == 0)																							// even row
-				field_up_left = board.getSquares()[square.getID()+3];
-			else																																	//odd row
-				field_up_left = board.getSquares()[square.getID()+4];
-						
-		return field_up_left;
-	}
-	// End of methods which returns square at the diagonal in the indicated direction
-	
-	
-	private static boolean man_move_possible(Board board, Square square, Square piece_square, Piece piece){
-		boolean movePossible = false;
-		
-		if(square.getPiece() == null){
-			if(piece.getOwner() == OWNER.WHITE){
-				if(piece_square.getID()/(board.getSize()/2) % 2 == 0){							//even row
-					if(piece_square.getID() % (board.getSize()/2) == 0){						//if piece_square is at the boarder of the board
-						if(square.getID() == piece_square.getID() + 4){
-							movePossible = true;
-						}
-					}else{																		//if piece_square is not at the boarder of the map
-						if(square.getID() == piece_square.getID() + 3 || square.getID() == piece_square.getID() + 4){
-							movePossible = true;
-						}
-					}
-				}else{																			//odd row
-					if(piece_square.getID() % (board.getSize()/2) ==(board.getSize()/2)-1){		//if piece_square is at the boarder of the board
-						if(square.getID() == piece_square.getID() + 4){
-							movePossible = true;
-						}
-					}else{																		//if piece_square is not at the boarder of the map
-						if(square.getID() == piece_square.getID() + 4 || square.getID() == piece_square.getID() + 5){
-							movePossible = true;
-						}
-					}
-				}
-			}else if(piece.getOwner() == OWNER.BLACK){
-				if(piece_square.getID()/(board.getSize()/2) % 2 == 0){							//even row
-					if(piece_square.getID() % (board.getSize()/2) == 0){						//if piece_square is at the boarder of the board
-						if(square.getID() == piece_square.getID() - 4){
-							movePossible = true;
-						}
-					}else{																		//if piece_square is not at the boarder of the map
-						if(square.getID() == piece_square.getID() - 5 || square.getID() == piece_square.getID() - 4){
-							movePossible = true;
-						}
-					}
-				}else{																			//odd row
-					if(piece_square.getID() % (board.getSize()/2) ==(board.getSize()/2)-1){		//if piece_square is at the boarder of the board
-						if(square.getID() == piece_square.getID() - 4){
-							movePossible = true;
-						}
-					}else{																		//if piece_square is not at the boarder of the map
-						if(square.getID() == piece_square.getID() - 4 || square.getID() == piece_square.getID() - 3){
-							movePossible = true;
-						}
-					}
-				}
-			}
-		}
-		return movePossible;
-	}
-	
-	public static boolean king_capture(Board board, Square square, Square piece_square, Piece piece){
-		boolean isCaptured = false;
-		
-if(square.getPiece() == null){
-			
-			// check fields at up_right diagonal
-			Square tmp = field_up_right(board, piece_square);
-			Square remove_square = null;
-			
-			for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)							// set tmp at the first square not empty
-				tmp = field_up_right(board, tmp);
-			
-			if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){											// check if not empty square exists at this diagonal and check if the piece's OWNER at the not empty square is different than OWNER of the "piece"
-				remove_square = tmp;
-				tmp = field_up_right(board, tmp);																		// every empty square between 2 not empty squares are square where capture is possible
-				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
-					if(square == tmp){
-						board.getSquares()[remove_square.getID()].setPiece(null);
-						isCaptured = true;
-					}	
-					tmp = field_up_right(board, tmp);
-				}	
-			}
-
-			
-			// check fields at up_left diagonal
-			tmp = field_up_left(board, piece_square);
-			
-			for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)	
-				tmp = field_up_left(board, tmp);
-			
-			if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){																	
-				remove_square = tmp;
-				tmp = field_up_left(board, tmp);												
-				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
-					if(square == tmp){
-						board.getSquares()[remove_square.getID()].setPiece(null);
-						isCaptured = true;
-					}
-					tmp = field_up_left(board, tmp);
-				}	
-			}		
-			
-			// check fields at down_right diagonal
-			tmp = field_down_right(board, piece_square);
-			
-			for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)	// set tmp at the first field not empty
-				tmp = field_down_right(board, tmp);
-			
-			if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){																	
-				remove_square = tmp;
-				tmp = field_down_right(board, tmp);												
-				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
-					if(square == tmp){
-						board.getSquares()[remove_square.getID()].setPiece(null);
-						isCaptured = true;
-					}
-					tmp = field_down_right(board, tmp);
-				}	
-			}		
-			
-			// check fields at down_left diagonal
-			tmp = field_down_left(board, piece_square);
-			
-			for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)	// set tmp at the first field not empty
-				tmp = field_down_left(board, tmp);
-			
-			if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){																	
-				remove_square = tmp;
-				tmp = field_down_left(board, tmp);												
-				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
-					if(square == tmp){
-						board.getSquares()[remove_square.getID()].setPiece(null);
-						isCaptured = true;
-					}
-					tmp = field_down_left(board, tmp);
-				}	
-			}		
-		}
-		
-		return isCaptured;
-	}
-	
-	public static boolean piece_capture(Board board, Square square, Square piece_square, Piece piece){
-		boolean isCaptured = false;
-		
-		if(square.getPiece() == null){
-			if(piece_square.getID() == square.getID() - 9){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()-5].getPiece() != null && board.getSquares()[square.getID()-5].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()-5].setPiece(null);
-						isCaptured = true;
-						
-					}
-				}else{
-					if(board.getSquares()[square.getID()-4].getPiece() != null && board.getSquares()[square.getID()-4].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()-4].setPiece(null);
-						isCaptured = true;
-					}
-				}
-			}
-			if(piece_square.getID() == square.getID() - 7){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()-4].getPiece() != null && board.getSquares()[square.getID()-4].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()-4].setPiece(null);
-						isCaptured = true;
-						
-					}
-				}else{
-					if(board.getSquares()[square.getID()-3].getPiece() != null && board.getSquares()[square.getID()-3].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()-3].setPiece(null);
-						isCaptured = true;
-					}	
-				}
-			}
-			if(piece_square.getID() == square.getID() + 7){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()+3].getPiece() != null && board.getSquares()[square.getID()+3].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()+3].setPiece(null);
-						isCaptured = true;
-					}	
-				}else{
-					if(board.getSquares()[square.getID()+4].getPiece() != null && board.getSquares()[square.getID()+4].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()+4].setPiece(null);
-						isCaptured = true;
-					}
-				}
-			}
-			if(piece_square.getID() == square.getID() + 9){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()+4].getPiece() != null && board.getSquares()[square.getID()+4].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()+4].setPiece(null);
-						isCaptured = true;
-					}
-				}else{
-					if(board.getSquares()[square.getID()+5].getPiece() != null && board.getSquares()[square.getID()+5].getPiece().getOwner() != piece.getOwner()){
-						board.getSquares()[square.getID()+5].setPiece(null);
-						isCaptured = true;
-					}	
-				}
-			}
-		}		
-		return isCaptured;
-	}
-	
 	
 	//returns true if capture move from "piece_square" to "square" by "piece" is possible
 	public static boolean king_capture_possible(Board board, Square square, Square piece_square, Piece piece){
@@ -414,72 +272,141 @@ if(square.getPiece() == null){
 				}	
 			}		
 		}
-		
 		return capturePossible;
 	}
-
 	
-	public static boolean man_capture_possible(Board board, Square square, Square piece_square, Piece piece){
+	//This metod execute capturing the piece by king
+	public static boolean king_capture(Board board, Square square, Square piece_square, Piece piece){
 		boolean isCaptured = false;
 		
-		if(square.getPiece() == null){
-			if(piece_square.getID() == square.getID() - 9){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()-5].getPiece() != null && board.getSquares()[square.getID()-5].getPiece().getOwner() != piece.getOwner()){
-						isCaptured = true;
-						
-					}
-				}else{
-					if(board.getSquares()[square.getID()-4].getPiece() != null && board.getSquares()[square.getID()-4].getPiece().getOwner() != piece.getOwner()){
-						
-						isCaptured = true;
-					}
-				}
-			}
-			if(piece_square.getID() == square.getID() - 7){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()-4].getPiece() != null && board.getSquares()[square.getID()-4].getPiece().getOwner() != piece.getOwner()){
-						
-						isCaptured = true;
-						
-					}
-				}else{
-					if(board.getSquares()[square.getID()-3].getPiece() != null && board.getSquares()[square.getID()-3].getPiece().getOwner() != piece.getOwner()){
-						
-						isCaptured = true;
+			if(square.getPiece() == null){
+				
+				// check fields at up_right diagonal
+				Square tmp = field_up_right(board, piece_square);
+				Square remove_square = null;
+				
+				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)							// set tmp at the first square not empty
+					tmp = field_up_right(board, tmp);
+				
+				if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){											// check if not empty square exists at this diagonal and check if the piece's OWNER at the not empty square is different than OWNER of the "piece"
+					remove_square = tmp;
+					tmp = field_up_right(board, tmp);																		// every empty square between 2 not empty squares are square where capture is possible
+					for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
+						if(square == tmp){
+							board.getSquares()[remove_square.getID()].setPiece(null);
+							isCaptured = true;
+						}	
+						tmp = field_up_right(board, tmp);
 					}	
-				}
 			}
-			if(piece_square.getID() == square.getID() + 7){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()+3].getPiece() != null && board.getSquares()[square.getID()+3].getPiece().getOwner() != piece.getOwner()){
-						
-						isCaptured = true;
+
+			
+				// check fields at up_left diagonal
+				tmp = field_up_left(board, piece_square);
+				
+				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)	
+					tmp = field_up_left(board, tmp);
+				
+				if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){																	
+					remove_square = tmp;
+					tmp = field_up_left(board, tmp);												
+					for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
+						if(square == tmp){
+							board.getSquares()[remove_square.getID()].setPiece(null);
+							isCaptured = true;
+						}
+						tmp = field_up_left(board, tmp);
 					}	
-				}else{
-					if(board.getSquares()[square.getID()+4].getPiece() != null && board.getSquares()[square.getID()+4].getPiece().getOwner() != piece.getOwner()){
-						
-						isCaptured = true;
-					}
-				}
-			}
-			if(piece_square.getID() == square.getID() + 9){
-				if(square.getID()/(board.getSize()/2) % 2 == 0){
-					if(board.getSquares()[square.getID()+4].getPiece() != null && board.getSquares()[square.getID()+4].getPiece().getOwner() != piece.getOwner()){
-						
-						isCaptured = true;
-					}
-				}else{
-					if(board.getSquares()[square.getID()+5].getPiece() != null && board.getSquares()[square.getID()+5].getPiece().getOwner() != piece.getOwner()){
-						
-						isCaptured = true;
+				}		
+			
+				// check fields at down_right diagonal
+				tmp = field_down_right(board, piece_square);
+				
+				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)	// set tmp at the first field not empty
+					tmp = field_down_right(board, tmp);
+				
+				if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){																	
+					remove_square = tmp;
+					tmp = field_down_right(board, tmp);												
+					for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
+						if(square == tmp){
+							board.getSquares()[remove_square.getID()].setPiece(null);
+							isCaptured = true;
+						}
+						tmp = field_down_right(board, tmp);
 					}	
-				}
+				}		
+				
+				// check fields at down_left diagonal
+				tmp = field_down_left(board, piece_square);
+				
+				for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++)	// set tmp at the first field not empty
+					tmp = field_down_left(board, tmp);
+				
+				if(tmp != null && tmp.getPiece().getOwner() != piece.getOwner()){																	
+					remove_square = tmp;
+					tmp = field_down_left(board, tmp);												
+					for(int i = 0; i < board.getSize() && tmp != null && tmp.getPiece() == null; i++){
+						if(square == tmp){
+							board.getSquares()[remove_square.getID()].setPiece(null);
+							isCaptured = true;
+						}
+						tmp = field_down_left(board, tmp);
+					}	
+				}		
 			}
-		}		
 		return isCaptured;
 	}
 	
+	// Methods which returns square at the diagonal in the indicated direction (returns null if square out of board)
+	private static Square field_up_right(Board board, Square square){
+		Square field_up_right = null;
+		
+		if(square != null && square.getID() >= board.getSize()/2 && square.getID() % board.getSize() != board.getSize()-1)	// square exists and it is not at the first row and at the last column
+			if(square.getID()/(board.getSize()/2) % 2 == 0)																	// even row
+				field_up_right = board.getSquares()[square.getID()- (board.getSize()/2)];
+			else																											//odd row
+				field_up_right = board.getSquares()[square.getID()- (board.getSize()/2) + 1];
+						
+		return field_up_right;
+	}
+	
+	private static Square field_up_left(Board board, Square square){
+		Square field_up_left = null;
+		
+		if(square != null && square.getID() >= board.getSize()/2 && square.getID() % board.getSize() != 0)					// square exists and it is not at the first row and at the first column
+			if(square.getID()/(board.getSize()/2) % 2 == 0)																	// even row
+				field_up_left = board.getSquares()[square.getID()-(board.getSize()/2) - 1];
+			else																											//odd row
+				field_up_left = board.getSquares()[square.getID()-(board.getSize()/2)];
+						
+		return field_up_left;
+	}
+	
+	private static Square field_down_right(Board board, Square square){
+		Square field_up_left = null;
+		
+		if(square != null && square.getID() < (board.getSize()-1)*(board.getSize()/2) && square.getID() % board.getSize() != board.getSize()-1)		// square exists and it is not at the last row and at the last column
+			if(square.getID()/(board.getSize()/2) % 2 == 0)																							// even row
+				field_up_left = board.getSquares()[square.getID()+(board.getSize()/2)];
+			else																																	//odd row
+				field_up_left = board.getSquares()[square.getID()+(board.getSize()/2)+1];
+						
+		return field_up_left;
+	}
+	
+	private static Square field_down_left(Board board, Square square){
+		Square field_up_left = null;
+		
+		if(square != null && square.getID() < (board.getSize()-1)*(board.getSize()/2) && square.getID() % board.getSize() != 0)						// square exists and it is not at the last row and at the first column
+			if(square.getID()/(board.getSize()/2) % 2 == 0)																							// even row
+				field_up_left = board.getSquares()[square.getID()+(board.getSize()/2)-1];
+			else																																	//odd row
+				field_up_left = board.getSquares()[square.getID()+(board.getSize()/2)];
+						
+		return field_up_left;
+	}
+	// End of methods which returns square at the diagonal in the indicated direction
 	
 	
 	public static void changeTurn(Board board){
@@ -488,7 +415,7 @@ if(square.getPiece() == null){
 		else
 			board.setTurn(true);
 	}
-	
+	//??? I do not remember that method ???
 	public static boolean achieveLastPool(Board board, Square square, Piece piece){
 		boolean achieve = false;
 		
