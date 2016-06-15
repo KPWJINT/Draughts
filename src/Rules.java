@@ -17,27 +17,27 @@ import java.util.ArrayList;
 //king_capture
 //Methods which returns square at the diagonal in the indicated direction (returns null if square out of board)
 //change turn method
-//other method
+//achive last pool method
 
 public abstract class Rules {
 	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 	public static boolean moveAvalible(Board board, Square square, Square piece_square ,Piece piece){ 		
 		boolean isAvalible = false;
-//		boolean captrurePossible = false;
+		boolean captrurePossible = false;
 
-//		for(int i = 0; i < board.getSquares().length; i++)
-//			for(int j = 0; j < board.getSquares().length; j++){
-//				if(board.getSquares()[i].getPiece() != null && board.getSquares()[i].getPiece().getOwner() == piece.getOwner()){
-//					if(board.getSquares()[i].getPiece().getType() == PIECE_TYPE.MAN){
-//						if(man_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
-//							captrurePossible = true;
-//					} else {
-//						if(king_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
-//							captrurePossible = true;
-//					}	
-//				}	
-//			}
+		for(int i = 0; i < board.getSquares().length; i++)
+			for(int j = 0; j < board.getSquares().length; j++){
+				if(board.getSquares()[i].getPiece() != null && board.getSquares()[i].getPiece().getOwner() == piece.getOwner()){
+					if(board.getSquares()[i].getPiece().getType() == PIECE_TYPE.MAN){
+						if(man_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
+							captrurePossible = true;
+					} else {
+						if(king_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
+							captrurePossible = true;
+					}	
+				}	
+			}
 		
 		if(board != null && square != null && piece != null && piece_square != null && square.getPiece() == null){ 								//all arguments are not null and square is empty
 			if((piece.getOwner() == OWNER.WHITE && board.getTurn() == true) || piece.getOwner() == OWNER.BLACK && board.getTurn() == false){ 	//turn condition
@@ -65,6 +65,7 @@ public abstract class Rules {
 			changeTurn(board);
 			if(achieveLastPool(board, square, piece))
 				piece.setType(PIECE_TYPE.KING);
+			System.out.println(board.getTurn());
 		}
 			
 		return isAvalible;
@@ -415,7 +416,7 @@ public abstract class Rules {
 		else
 			board.setTurn(true);
 	}
-	//??? I do not remember that method ???
+	//This method change type of the Piece from MAN to the KING if he achieve end of the board
 	public static boolean achieveLastPool(Board board, Square square, Piece piece){
 		boolean achieve = false;
 		
@@ -432,4 +433,24 @@ public abstract class Rules {
 		}
 		return achieve;
 	}
+	
+	public static boolean is_end_of_the_game(Board board){
+		int white_pieces = 0;
+		int black_pieces = 0;
+		boolean isEND = false;
+		
+		for(int i = 0; i < board.getSquares().length; i++){
+			if(board.getSquares()[i].getPiece() != null){
+				if(board.getSquares()[i].getPiece().getOwner() == OWNER.WHITE)
+					white_pieces++;
+				if(board.getSquares()[i].getPiece().getOwner() == OWNER.BLACK)
+					black_pieces++;
+			}
+		}
+		if(white_pieces == 0 || black_pieces == 0)
+			isEND = true;
+		return isEND;
+	}
+	
+	
 }

@@ -18,6 +18,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	Image image_black_king;
 	Image image_trace;
 	Image image_avalible;
+	Image image_end;
 	
 	Board board;
 	int picture_size;
@@ -42,6 +43,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			image_white_king = ImageIO.read(new File("Graphics/white_king.png"));
 			image_black_king = ImageIO.read(new File("Graphics/black_king.png"));
 			image_avalible = ImageIO.read(new File("Graphics/avalible.png"));
+			image_end = ImageIO.read(new File("Graphics/END.png"));
 			
 			image_square = image_square.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_white = image_white.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
@@ -49,6 +51,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			image_white_king = image_white_king.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_black_king = image_black_king.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
 			image_avalible = image_avalible.getScaledInstance(square_length, square_length, Image.SCALE_DEFAULT);
+			image_end = image_end.getScaledInstance(square_length*board.getSize(), square_length*board.getSize(), Image.SCALE_DEFAULT);
 			
 			Square.setImage(image_square);		
 		}
@@ -133,6 +136,9 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		//image trace
 		if(piece_trace != null)
 				g2.drawImage(image_trace,(int)x_trace, (int)y_trace, this);
+		
+		if(Rules.is_end_of_the_game(board) && piece_trace == null)
+			g2.drawImage(image_end, 0, 0, this);						//set different location?
 	}
 
 	
@@ -235,7 +241,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 				putPiece(piece_trace.getPoint());
 		}else if(piece_trace != null)
 			putPiece(piece_trace.getPoint());
-			
+				
 			piece_trace = null;
 			available_squares.removeAll(available_squares);
 		repaint();
