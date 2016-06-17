@@ -22,42 +22,15 @@ import java.util.ArrayList;
 public abstract class Rules {
 	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
-	public static boolean moveAvalible(Board board, Square square, Square piece_square ,Piece piece){ 		
+	public static boolean moveAvailable(Board board, Square square, Square piece_square ,Piece piece){ 		
 		boolean isAvalible = false;
-		boolean captrurePossible = false;
 
-		for(int i = 0; i < board.getSquares().length; i++)
-			for(int j = 0; j < board.getSquares().length; j++){
-				if(board.getSquares()[i].getPiece() != null && board.getSquares()[i].getPiece().getOwner() == piece.getOwner()){
-					if(board.getSquares()[i].getPiece().getType() == PIECE_TYPE.MAN){
-						if(man_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
-							captrurePossible = true;
-					} else {
-						if(king_capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
-							captrurePossible = true;
-					}	
-				}	
-			}
-		
-		if(board != null && square != null && piece != null && piece_square != null && square.getPiece() == null){ 								//all arguments are not null and square is empty
+		if(board != null && piece != null && square != null && piece_square != null){			//all arguments are not null and square is empty				
 			if((piece.getOwner() == OWNER.WHITE && board.getTurn() == true) || piece.getOwner() == OWNER.BLACK && board.getTurn() == false){ 	//turn condition
-				if(piece.getType() == PIECE_TYPE.MAN){
-//					if(captrurePossible == true)
-//						if(man_capture(board, square, piece_square, piece))
-//							isAvalible = true;
-//					if(captrurePossible == false)
-//						if(man_move_possible(board, square, piece_square, piece))
-//							isAvalible = true;
-					if(man_move_possible(board, square, piece_square, piece))
-						isAvalible = true;
-					if(man_capture(board, square, piece_square, piece))
-						isAvalible = true;
-				}else{
-					if(king_move_possible(board, square, piece_square, piece))
-						isAvalible = true;
-					if(king_capture(board, square, piece_square, piece))
-						isAvalible = true;
-				}
+				if(capture(board, square, piece_square, piece))
+					isAvalible = true;
+				if(move_possible(board, square, piece_square, piece))
+					isAvalible = true;
 			}
 		}
 		
@@ -71,7 +44,7 @@ public abstract class Rules {
 		return isAvalible;
 	}
 	
-	//this method returns list of squares which are avalible to reach by piece "piece" at the "piece_square" according to the rules
+	//this method returns list of squares which are available to reach by piece "piece" at the "piece_square" according to the rules
 	public static ArrayList<Square> availableSquares(Board board, Square piece_square, Piece piece){
 		ArrayList<Square> availableSquares = new ArrayList<Square>();
 		
@@ -88,6 +61,77 @@ public abstract class Rules {
 		}
 		return availableSquares;
 	}
+	
+	//returns true if the "piece" can move from "piece_square" to the "square"
+	private static boolean move_possible(Board board, Square square, Square piece_square, Piece piece){
+		boolean isPossible = false;
+		
+		if(!capture_possible(board, piece_square, piece) && !capture_possible(board, piece)){ 					// if there is no possibility to capture anywhere
+			if(piece.getType() == PIECE_TYPE.MAN)
+				if(man_move_possible(board, square, piece_square, piece))
+					isPossible = true;
+			if(piece.getType() == PIECE_TYPE.KING)
+				if(king_move_possible(board, square, piece_square, piece))
+					isPossible = true;
+		}
+		
+		return isPossible;
+	}
+	
+	//returns true if at the "board" there is any possibility to capture by piece.getOwner() Player (The piece_trace is not taken into consideration)
+	private static boolean capture_possible(Board board, Piece piece){
+		boolean isPossible = false;
+		
+			for(int i = 0; i < board.getSquares().length && !isPossible; i++){
+				for(int j = 0; j < board.getSquares().length; j++){
+					if(board.getSquares()[i].getPiece() != null && board.getSquares()[i].getPiece().getOwner() == piece.getOwner()){
+						if(capture_possible(board, board.getSquares()[j], board.getSquares()[i], board.getSquares()[i].getPiece()))
+							isPossible = true;
+					}	
+				}		
+			}	
+		return isPossible;
+	}
+	
+	//returns true if the "piece" from "piece_squre" can capture anywhere
+	private static boolean capture_possible(Board board, Square piece_square, Piece piece){
+		boolean isPossible = false;
+		
+		for(int i = 0; i < board.getSquares().length && !isPossible; i++)
+			if(capture_possible(board, board.getSquares()[i], piece_square, piece))
+				isPossible = true;
+		
+		return isPossible;
+	}
+	
+	// returns true if the "piece" can capture from "piece_square" to the "square"
+	private static boolean capture_possible(Board board, Square square, Square piece_square, Piece piece){
+		boolean isPossible = false;
+		
+		if(piece.getType() == PIECE_TYPE.MAN)
+			if(man_capture_possible(board, square, piece_square, piece))
+				isPossible = true;
+		if(piece.getType() == PIECE_TYPE.KING)
+			if(king_capture_possible(board, square, piece_square, piece))
+				isPossible = true;
+		
+		return isPossible;
+	}
+	
+	// returns true if the "piece" can capture from "piece_square" to the "square"
+		private static boolean capture(Board board, Square square, Square piece_square, Piece piece){
+			boolean isPossible = false;
+			
+			if(piece.getType() == PIECE_TYPE.MAN)
+				if(man_capture(board, square, piece_square, piece))
+					isPossible = true;
+			if(piece.getType() == PIECE_TYPE.KING)
+				if(king_capture(board, square, piece_square, piece))
+					isPossible = true;
+			
+			return isPossible;
+		}
+	
 	
 	//This method returns true if move from piece_square to the square is possible
 	private static boolean man_move_possible(Board board, Square square, Square piece_square, Piece piece){
@@ -106,7 +150,7 @@ public abstract class Rules {
 		return movePossible;
 	}
 	
-	public static boolean man_capture_possible(Board board, Square square, Square piece_square, Piece piece){
+	private static boolean man_capture_possible(Board board, Square square, Square piece_square, Piece piece){
 		boolean capturePossible = false;
 		
 		if(square.getPiece() == null){
@@ -131,7 +175,7 @@ public abstract class Rules {
 		return capturePossible;
 	}
 	
-	public static boolean man_capture(Board board, Square square, Square piece_square, Piece piece){
+	private static boolean man_capture(Board board, Square square, Square piece_square, Piece piece){
 		boolean isCaptured = false;
 		
 		if(square.getPiece() == null){
@@ -208,7 +252,7 @@ public abstract class Rules {
 	}
 	
 	//returns true if capture move from "piece_square" to "square" by "piece" is possible
-	public static boolean king_capture_possible(Board board, Square square, Square piece_square, Piece piece){
+	private static boolean king_capture_possible(Board board, Square square, Square piece_square, Piece piece){
 		boolean capturePossible = false;
 		
 		if(square.getPiece() == null){
@@ -277,7 +321,7 @@ public abstract class Rules {
 	}
 	
 	//This metod execute capturing the piece by king
-	public static boolean king_capture(Board board, Square square, Square piece_square, Piece piece){
+	private static boolean king_capture(Board board, Square square, Square piece_square, Piece piece){
 		boolean isCaptured = false;
 		
 			if(square.getPiece() == null){
