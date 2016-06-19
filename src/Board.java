@@ -6,6 +6,7 @@ public class Board{
 	private final int size;
 	private boolean turn;	//if white player turn = true, if black player turn = false
 	
+	//create initial board for draughts
 	public Board(int size){
 		this.size = size;
 		this.turn = true;
@@ -34,5 +35,18 @@ public class Board{
 	public Square[] getSquares(){return squares;}
 	public Piece[] getPlayer_white(){return player_white;}
 	public Piece[] getPlayer_black(){return player_black;}
+	public Board clone(){
+		Board b = new Board(size);
+		
+		for(int i = 0; i < squares.length; i++)
+			b.squares[i] = squares[i];
+		for(int i = 0; i < player_white.length; i++)
+			b.player_white[i] = player_white[i];
+		for(int i = 0; i < player_black.length; i++)
+			b.player_black[i] = player_black[i];
+		b.turn = turn;
+		
+		return b;
+	}
 }
 
