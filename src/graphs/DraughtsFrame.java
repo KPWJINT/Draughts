@@ -15,7 +15,7 @@ public class DraughtsFrame extends JFrame{
 	{		
 		super("Draughts");
 		JPanel panel = new BoardPanel(sizeOfBoard);
-		setSize(sizeOfBoard*25+50, sizeOfBoard*25+70);
+		setSize(sizeOfBoard*50+50, sizeOfBoard*50+70);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container container = getContentPane();

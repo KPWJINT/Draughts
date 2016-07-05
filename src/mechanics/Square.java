@@ -1,9 +1,9 @@
 package mechanics;
 
-public class Squares {
+public class Square {
 	private Piece piece;
 	private final int squareID;
-	public Squares(int squareID, Piece piece)
+	public Square(int squareID, Piece piece)
 	{
 		this.piece= piece;
 		this.squareID=squareID;

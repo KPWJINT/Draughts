@@ -4,7 +4,7 @@ import enums.PIECE_TYPE;
 
 
 public class Board implements Rules{
-	private Squares[] board;
+	private Square[] board;
 	private Piece[] whitePlayer;
 	private Piece[] blackPlayer;
 	private final int sizeOfBoard;
@@ -12,19 +12,19 @@ public class Board implements Rules{
 	public Board(int sizeOfBoard)
 	{
 		this.sizeOfBoard= sizeOfBoard;
-		board = new Squares[this.sizeOfBoard*this.sizeOfBoard/2];
+		board = new Square[this.sizeOfBoard*this.sizeOfBoard/2];
 		whitePlayer= new Piece[(this.sizeOfBoard-2)*this.sizeOfBoard/4];
 		blackPlayer= new Piece[(this.sizeOfBoard-2)*this.sizeOfBoard/4];
 		for(int i=0;i<whitePlayer.length;++i)
 		{
 			whitePlayer[i]= new Piece(PIECE_TYPE.MAN,OWNER.WHITE,i);
 			blackPlayer[i]= new Piece(PIECE_TYPE.MAN,OWNER.BLACK,i);
-			board[i]=new Squares(i,whitePlayer[i]);
-			board[board.length-i-1]=new Squares(this.board.length-i-1,blackPlayer[blackPlayer.length-i-1]);						
+			board[i]=new Square(i,whitePlayer[i]);
+			board[board.length-i-1]=new Square(this.board.length-i-1,blackPlayer[blackPlayer.length-i-1]);						
 		}
 
 		for(int i=this.sizeOfBoard*this.sizeOfBoard/4-1;i<this.sizeOfBoard-(this.sizeOfBoard*this.sizeOfBoard)/4;++i)
-			board[i]= new Squares(i,null);		
+			board[i]= new Square(i,null);		
 	}
 	public int[] connectedTo(int squareID)
 	{

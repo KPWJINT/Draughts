@@ -17,18 +17,17 @@ public class BoardPanel extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		// prostokat
-		g2d.drawRect(10, 10, sizeOfBoard*25+10, sizeOfBoard*25+10);
+		g2d.drawRect(10, 10, sizeOfBoard*50+10, sizeOfBoard*50+10);
+		g2d.drawRect(15, 15, sizeOfBoard*50, sizeOfBoard*50);
 		for(int i=0; i<sizeOfBoard/2; ++i)
 		{
 			for(int j=0;j<sizeOfBoard/2;++j)
 			{
-				g2d.fillRect(15+2*j*25, 15+2*i*25, 25, 25);
-				g2d.drawRect(15+(2*j+1)*25, 15+2*i*25, 25, 25);
+				g2d.fillRect(15+2*j*50, 15+2*i*50, 50, 50);
 			}
 			for(int j=0;j<sizeOfBoard/2;++j)
 			{
-				g2d.fillRect(15+(2*j+1)*25, 15+(2*i+1)*25, 25, 25);
-				g2d.drawRect(15+2*j*25, 15+(2*i+1)*25, 25, 25);
+				g2d.fillRect(15+(2*j+1)*50, 15+(2*i+1)*50, 50, 50);
 			}
 		}
 
