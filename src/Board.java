@@ -39,11 +39,11 @@ public class Board{
 		Board b = new Board(size);
 		
 		for(int i = 0; i < squares.length; i++)
-			b.squares[i] = squares[i];
+			b.squares[i] = new Square(squares[i]);
 		for(int i = 0; i < player_white.length; i++)
-			b.player_white[i] = player_white[i];
+			b.player_white[i] = new Piece(player_white[i]);
 		for(int i = 0; i < player_black.length; i++)
-			b.player_black[i] = player_black[i];
+			b.player_black[i] = new Piece(player_black[i]);
 		b.turn = turn;
 		
 		return b;

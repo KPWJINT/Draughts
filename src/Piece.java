@@ -13,6 +13,12 @@ public class Piece {
 			this.type = type;
 		} // constructor
 	
+	public Piece(Piece piece){
+		this.ID = piece.getID();
+		this.owner = piece.getOwner();
+		this.type = piece.getType();
+	}
+	
 	public int getID() { return ID; }
 	public OWNER getOwner() { return owner; }
 	public PIECE_TYPE getType() { return type; }

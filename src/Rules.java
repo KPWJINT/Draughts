@@ -3,7 +3,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 //to do:
-//czy mo¿na wybraæ ile zbiæ?
 //je¿eli podcza bicia przechodzisz przez pole zmiany rodzaju piona to nie zmieniasz rodzaju piona bo to bicie
 //warunek zwyciêstwa
 
@@ -137,6 +136,8 @@ public abstract class Rules {
 //		}
 		
 		////////////////////////////////////////////////////////////////////////////////////////////
+		
+	
 	
 		// returns true if the "piece" can capture from "piece_square" to the "square"
 		private static boolean capture(Board board, Square square, Square piece_square, Piece piece){
@@ -153,12 +154,26 @@ public abstract class Rules {
 			
 			return isPossible;
 		}
+		
+		// returns true if the "piece" can capture from "piece_square" to the "square"
+		private static boolean capture_x(Board board, Square square, Square piece_square, Piece piece){
+			boolean isPossible = false;
+			
+				if(piece.getType() == PIECE_TYPE.MAN)
+					if(man_capture(board, square, piece_square, piece))
+						isPossible = true;
+				if(piece.getType() == PIECE_TYPE.KING)
+					if(king_capture(board, square, piece_square, piece))
+						isPossible = true;
+			
+			return isPossible;
+		}
 
 		//metoda zwracaj¹ca pola o najwiêkszej liczbie biæ
 		private static LinkedList<Square> metoda1(Board board, Square piece_square, Piece piece){
 			LinkedList<Square> result = new LinkedList<Square>();
 			
-			result = capture_possible(board, piece_square, piece);
+			result = capture_possible(board, piece_square, piece); // result = mo¿liwe pola na które mo¿na zbiæ
 			metoda2(board, piece_square, piece, result);
 			
 			return result;
@@ -178,7 +193,7 @@ public abstract class Rules {
 					Board b = board.clone();
 					square = it.next();
 					
-					capture(b, square, piece_square, piece);
+					capture_x(b, square, piece_square, piece);
 					list2.add(1 + metoda2(b, square, piece, capture_possible(board, square, piece)));
 					
 				}
@@ -189,12 +204,14 @@ public abstract class Rules {
 						result = n;
 				
 				//usuniêcie elementów o mniejszej liczbie biæ niz result(czyli najwiêkszej)
-				for(int i = 0; i < list.size(); i++)
+				for(int i = 0; i < list.size(); i++){
 					if(list2.get(i) < result){
 						list.remove(i);
 						list2.remove(i);
 						i--;
 					}
+				}
+					
 			}
 			
 					

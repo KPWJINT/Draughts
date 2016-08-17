@@ -11,6 +11,12 @@ public class Square {
 			this.piece=piece;
 			this.ID=ID;
 		}
+		
+		public Square(Square square){
+			if(square.getPiece() != null)
+			this.piece = new Piece(square.getPiece());
+			this.ID = square.getID();
+		}
 
 		public static void setImage(Image i){image=i;}
 		public static Image getImage(){return image;} //change this in Interface branch
