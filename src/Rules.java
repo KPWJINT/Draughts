@@ -17,7 +17,12 @@ import java.util.ArrayList;
 //change turn method
 //achieve last pool method
 
+
+
 public abstract class Rules {
+	
+	//if multiCapture, this piece contains the piece which is capturing
+	static Piece piece_saved = null;
 	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 	public static boolean moveAvailable(Board board, Square square, Square piece_square ,Piece piece){ 		
@@ -45,16 +50,39 @@ public abstract class Rules {
 	//this method returns list of squares which are available to reach by piece "piece" at the "piece_square" according to the rules
 	public static ArrayList<Square> availableSquares(Board board, Square piece_square, Piece piece){
 		ArrayList<Square> availableSquares = new ArrayList<Square>();
+		boolean isCapturePossible = false;
+		
 		
 		if(board != null && piece_square != null && piece != null && ((piece.getOwner() == OWNER.WHITE) && board.getTurn() == true)||(piece.getOwner() == OWNER.BLACK) && (board.getTurn() == false)){
+			
+			//ta funkcja sprawdza tylko możliwości dla jednego pionka, trzeba napisać funkcję która sprawdza wszystkie możliwe opcje na planszy
+			
+			// at first we need to check if there is any possibility of capture
 			if(piece.getType() == PIECE_TYPE.MAN){
 				for(int i = 0; i < board.getSquares().length; i++)
-					if(man_move_possible(board, board.getSquares()[i], piece_square, piece) || man_capture_possible(board, board.getSquares()[i], piece_square, piece))
+					if(man_capture_possible(board, board.getSquares()[i], piece_square, piece)){
 						availableSquares.add(board.getSquares()[i]);
+						isCapturePossible = true;
+					}		
 			}else if(piece.getType() == PIECE_TYPE.KING){
 				for(int i = 0; i < board.getSquares().length; i++)
-					if(king_move_possible(board, board.getSquares()[i], piece_square, piece) || king_capture_possible(board, board.getSquares()[i], piece_square, piece))
+					if(king_capture_possible(board, board.getSquares()[i], piece_square, piece)){
 						availableSquares.add(board.getSquares()[i]);
+						isCapturePossible = true;
+					}		
+			}
+			
+			//if there is no possibility of capture then check normal moves
+			if(isCapturePossible == false){
+				if(piece.getType() == PIECE_TYPE.MAN){
+					for(int i = 0; i < board.getSquares().length; i++)
+						if(man_move_possible(board, board.getSquares()[i], piece_square, piece))
+							availableSquares.add(board.getSquares()[i]);
+				}else if(piece.getType() == PIECE_TYPE.KING){
+					for(int i = 0; i < board.getSquares().length; i++)
+						if(king_move_possible(board, board.getSquares()[i], piece_square, piece))
+							availableSquares.add(board.getSquares()[i]);
+				}
 			}
 		}
 		return availableSquares;
@@ -64,14 +92,18 @@ public abstract class Rules {
 	private static boolean move_possible(Board board, Square square, Square piece_square, Piece piece){
 		boolean isPossible = false;
 		
-		if(!capture_possible(board, piece_square, piece) && !capture_possible(board, piece)){ 					// if there is no possibility to capture anywhere
-			if(piece.getType() == PIECE_TYPE.MAN)
-				if(man_move_possible(board, square, piece_square, piece))
-					isPossible = true;
-			if(piece.getType() == PIECE_TYPE.KING)
-				if(king_move_possible(board, square, piece_square, piece))
-					isPossible = true;
-		}
+		ArrayList<Square> availableSquares = availableSquares(board, piece_square, piece);
+		if(availableSquares.contains(square))
+			isPossible = true;
+		
+//		if(!capture_possible(board, piece_square, piece) && !capture_possible(board, piece)){ 					// if there is no possibility to capture anywhere
+//			if(piece.getType() == PIECE_TYPE.MAN)
+//				if(man_move_possible(board, square, piece_square, piece))
+//					isPossible = true;
+//			if(piece.getType() == PIECE_TYPE.KING)
+//				if(king_move_possible(board, square, piece_square, piece))
+//					isPossible = true;
+//		}
 		
 		return isPossible;
 	}
