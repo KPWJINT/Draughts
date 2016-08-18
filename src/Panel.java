@@ -24,7 +24,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	int picture_size;
 	
 	ArrayList<Square> available_squares = new ArrayList<Square>();
-	Piece piece_trace; // new, piece which is traced
+	Piece piece_trace; // new, piece which is traced, point2D of this piece save location of the square from where it was taken
 	double x_trace;
 	double y_trace;
 	
@@ -134,9 +134,14 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			g2.drawImage(image_avalible,(int)available_squares.get(i).getPoint().getX(), (int)available_squares.get(i).getPoint().getY(), this);
 			
 		//image trace
-		if(piece_trace != null)
-				g2.drawImage(image_trace,(int)x_trace, (int)y_trace, this);
+		if(piece_trace != null){
+			g2.drawImage(Square.getImage(),(int)piece_trace.getPoint().getX(), (int)piece_trace.getPoint().getY(), this);
+			g2.drawImage(image_trace,(int)x_trace, (int)y_trace, this);
+		}
+				
 		
+		
+		//Draws end of the game if game ends
 		if(Rules.is_end_of_the_game(board) && piece_trace == null)
 			g2.drawImage(image_end, 0, 0, this);						//set different location?
 	}
@@ -158,6 +163,12 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		return y;
 	}
 	
+	public Point2D getPoint2DLocation(Point2D point){
+		Point2D result = new Point2D.Double(getXlocation(point.getX()),getYlocation(point.getY()));
+		return result;
+	}
+	
+	// remove piece at the location
 	public Piece removePiece(Point2D p){
 		int x = getXlocation(p.getX());
 		int y = getYlocation(p.getY());
@@ -174,6 +185,22 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		return piece;
 	}
 	
+	// get piece at the location
+		public Piece getPiece(Point2D p){
+			int x = getXlocation(p.getX());
+			int y = getYlocation(p.getY());
+			
+			Point2D point = new Point2D.Double(x, y);
+			Piece piece = null;
+			
+			for(int i = 0; i < board.getSquares().length; i++){
+				if(board.getSquares()[i] != null && board.getSquares()[i].getPoint().equals(point))
+					piece = board.getSquares()[i].getPiece();
+			}
+			return piece;
+		}
+	
+	//set trace_piece at the square at the specified Point2D
 	public boolean putPiece(Point2D p){
 		int x = getXlocation(p.getX());
 		int y = getYlocation(p.getY());
@@ -188,8 +215,9 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 			}
 		}
 		return isDone;
-	} //set trace_piece at the square at the specified Point2D
+	} 
 	
+	// set x_ and y_trace and set image_trace
 	public void tracePiece(Point2D p){
 		x_trace = p.getX() - picture_size/2;
 		y_trace = p.getY() - picture_size/2;
@@ -207,6 +235,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		repaint();
 	}
 	
+	// get square at the specified position
 	public Square getSquare(Point2D p){
 		Square square = null;
 		int x = getXlocation(p.getX());
@@ -226,24 +255,41 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		piece_trace = removePiece(e.getPoint());
-		
+//		piece_trace = removePiece(e.getPoint());	//!!!! Czy ten pionek powinien byæ usuniêty, czy tylko nie wyœwietlany? Pamiêtaæ o put piece jeœli to usuwasz
+//		
+//		if(piece_trace != null){
+//			piece_trace.setPoint(e.getPoint());		//remember last place
+//			available_squares.addAll(Rules.availableSquares(board, getSquare(piece_trace.getPoint()), piece_trace));
+//		}
+		piece_trace = getPiece(e.getPoint());
 		if(piece_trace != null){
-			piece_trace.setPoint(e.getPoint());		//remember last place
+			piece_trace.setPoint(getPoint2DLocation(e.getPoint()));
 			available_squares.addAll(Rules.availableSquares(board, getSquare(piece_trace.getPoint()), piece_trace));
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e){
-		if(piece_trace != null && Rules.moveAvailable(board, getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace)){
-			if(!putPiece(e.getPoint()) && piece_trace != null)
-				putPiece(piece_trace.getPoint());
-		}else if(piece_trace != null)
-			putPiece(piece_trace.getPoint());
-				
-			piece_trace = null;
-			available_squares.removeAll(available_squares);
+//		if(piece_trace != null && Rules.moveAvailable(board, getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace)){
+//			if(!putPiece(e.getPoint()) && piece_trace != null)
+//				putPiece(piece_trace.getPoint());
+//		}else if(piece_trace != null)
+//			putPiece(piece_trace.getPoint());
+//				
+//			piece_trace = null;
+//			available_squares.removeAll(available_squares);
+//		repaint();
+		
+		//mo¿na daæ wyj¹tek jeœli putPiece = false?
+		if(piece_trace != null){
+			if(getSquare(e.getPoint()) != null && Rules.moveAvailable(board, getSquare(e.getPoint()), getSquare(piece_trace.getPoint()) ,piece_trace))
+				putPiece(e.getPoint());
+			else
+				putPiece(piece_trace.getPoint());	
+		}
+		//jeœli po ruchu usunê³o pionka to go usun¹æ? zamiast put piece dodawaæ pionek w rules?
+		piece_trace = null;
+		available_squares.removeAll(available_squares);
 		repaint();
 	}
 
