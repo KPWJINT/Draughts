@@ -17,20 +17,22 @@ import java.util.ArrayList;
 //change turn method
 //achieve last pool method
 
-
+//availablePiecesMove
+//availablePiecesCapture
+//availablePiecesStep
 
 public abstract class Rules {
 	
 	//if multiCapture, this piece contains the piece which is capturing
 	static Piece piece_saved = null;
 	
+	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 	public static void move(Board board, Square square, Square piece_square ,Piece piece){
 		if(moveAvailable(board, square, piece_square, piece))
 			board.getSquares()[square.getID()].setPiece(piece);
 		else
 			board.getSquares()[piece_square.getID()].setPiece(piece);
 	}
-	// indeks pola na którym był albo na którym będzie
 	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 	public static boolean moveAvailable(Board board, Square square, Square piece_square ,Piece piece){ 		
@@ -54,6 +56,47 @@ public abstract class Rules {
 			
 		return isAvalible;
 	}
+	
+	
+	//this method return list of pieces that can move at this moment
+	public static ArrayList<Square> availablePiecesMove(Board board){
+		ArrayList<Square> availablePiecesMoveList = new ArrayList<Square>();
+		
+		availablePiecesMoveList = availablePiecesCapture(board);
+		if(availablePiecesMoveList.isEmpty()){
+			availablePiecesMoveList = availablePiecesMove(board);
+			if(availablePiecesMoveList.isEmpty())
+				System.out.println("End of the game! Need to set end");
+		}else{
+			//if(!multiCapturePossible) nic, po prostu zwraca listę
+			if(multi_capture_possible){
+				// ustala listę pionków o największej ilości bić i zwraca, lecz trzeba pamiętać że tutaj będzie inaczej bo będzie zapamiętywać pionek
+			}
+		}
+		return availablePiecesMoveList;
+	}
+	
+	//this method return list of pieces that can capture at this moment
+	public static ArrayList<Square> availablePiecesCapture(Board board){
+		ArrayList<Square> availablePiecesCaptureList = new ArrayList<Square>();
+		
+		for(int i = 0; i < board.getSquares().length; i++)
+			if(board.getSquares()[i].getPiece() != null && capture_possible(board, board.getSquares()[i].getPiece()))
+				availablePiecesCaptureList.add(board.getSquares()[i]);
+		
+		return availablePiecesCaptureList;
+	}
+	
+	//this method return list of pieces that can step at this moment
+		public static ArrayList<Square> availablePiecesStep(Board board){
+			ArrayList<Square> availablePiecesStepList = new ArrayList<Square>();
+			
+			for(int i = 0; i < board.getSquares().length; i++)
+				if(board.getSquares()[i].getPiece() != null && step_possible(board.getSquares()[i].getPiece()))
+					availablePiecesStepList.add(board.getSquares()[i]);
+			
+			return availablePiecesStepList;
+		}
 	
 	//this method returns list of squares which are available to reach by piece "piece" at the "piece_square" according to the rules
 	public static ArrayList<Square> availableSquares(Board board, Square piece_square, Piece piece){
