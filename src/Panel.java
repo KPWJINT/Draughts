@@ -174,21 +174,21 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		return piece;
 	}
 	
-	public boolean putPiece(Point2D p){
-		int x = getXlocation(p.getX());
-		int y = getYlocation(p.getY());
-		boolean isDone = false;
-		
-		Point2D point = new Point2D.Double(x, y);
-		
-		for(int i = 0; i < board.getSquares().length; i++){
-			if(board.getSquares()[i] != null && board.getSquares()[i].getPoint().equals(point) && board.getSquares()[i].getPiece() == null){
-				board.getSquares()[i].setPiece(piece_trace);
-				isDone = true;
-			}
-		}
-		return isDone;
-	} //set trace_piece at the square at the specified Point2D
+//	public boolean putPiece(Point2D p){
+//		int x = getXlocation(p.getX());
+//		int y = getYlocation(p.getY());
+//		boolean isDone = false;
+//		
+//		Point2D point = new Point2D.Double(x, y);
+//		
+//		for(int i = 0; i < board.getSquares().length; i++){
+//			if(board.getSquares()[i] != null && board.getSquares()[i].getPoint().equals(point) && board.getSquares()[i].getPiece() == null){
+//				board.getSquares()[i].setPiece(piece_trace);
+//				isDone = true;
+//			}
+//		}
+//		return isDone;
+//	} //set trace_piece at the square at the specified Point2D
 	
 	public void tracePiece(Point2D p){
 		x_trace = p.getX() - picture_size/2;
@@ -236,14 +236,11 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseReleased(MouseEvent e){
-		if(piece_trace != null && Rules.moveAvailable(board, getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace)){
-			if(!putPiece(e.getPoint()) && piece_trace != null)
-				putPiece(piece_trace.getPoint());
-		}else if(piece_trace != null)
-			putPiece(piece_trace.getPoint());
-				
-			piece_trace = null;
-			available_squares.removeAll(available_squares);
+		if(piece_trace != null){
+			Rules.move(board, getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace);
+		}	
+		piece_trace = null;
+		available_squares.removeAll(available_squares);
 		repaint();
 	}
 

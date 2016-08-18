@@ -24,6 +24,14 @@ public abstract class Rules {
 	//if multiCapture, this piece contains the piece which is capturing
 	static Piece piece_saved = null;
 	
+	public static void move(Board board, Square square, Square piece_square ,Piece piece){
+		if(moveAvailable(board, square, piece_square, piece))
+			board.getSquares()[square.getID()].setPiece(piece);
+		else
+			board.getSquares()[piece_square.getID()].setPiece(piece);
+	}
+	// indeks pola na którym był albo na którym będzie
+	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 	public static boolean moveAvailable(Board board, Square square, Square piece_square ,Piece piece){ 		
 		boolean isAvalible = false;
