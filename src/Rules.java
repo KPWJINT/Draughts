@@ -1,17 +1,12 @@
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 //to do:
-//je¿eli podcza bicia przechodzisz przez pole zmiany rodzaju piona to nie zmieniasz rodzaju piona bo to bicie
-//warunek zwyciêstwa
+//jeeli podcza bicia przechodzisz przez pole zmiany rodzaju piona to nie zmieniasz rodzaju piona bo to bicie
+//bicie wielokrotne
 
 //Methods:
 //moveAvalible
 //avalibleSquares
-//move_possible
-//capture_possible x3
-//capture
 //man_move_possible
 //man_capture_possible
 //man capture
@@ -20,7 +15,7 @@ import java.util.LinkedList;
 //king_capture
 //Methods which returns square at the diagonal in the indicated direction (returns null if square out of board)
 //change turn method
-//achive last pool method
+//achieve last pool method
 
 public abstract class Rules {
 	
@@ -51,7 +46,7 @@ public abstract class Rules {
 	public static ArrayList<Square> availableSquares(Board board, Square piece_square, Piece piece){
 		ArrayList<Square> availableSquares = new ArrayList<Square>();
 		
-		if(board != null && piece_square != null && piece != null){
+		if(board != null && piece_square != null && piece != null && ((piece.getOwner() == OWNER.WHITE) && board.getTurn() == true)||(piece.getOwner() == OWNER.BLACK) && (board.getTurn() == false)){
 			if(piece.getType() == PIECE_TYPE.MAN){
 				for(int i = 0; i < board.getSquares().length; i++)
 					if(man_move_possible(board, board.getSquares()[i], piece_square, piece) || man_capture_possible(board, board.getSquares()[i], piece_square, piece))
@@ -69,7 +64,7 @@ public abstract class Rules {
 	private static boolean move_possible(Board board, Square square, Square piece_square, Piece piece){
 		boolean isPossible = false;
 		
-		if(capture_possible(board, piece_square, piece).isEmpty() && !capture_possible(board, piece)){ 					// if there is no possibility to capture anywhere
+		if(!capture_possible(board, piece_square, piece) && !capture_possible(board, piece)){ 					// if there is no possibility to capture anywhere
 			if(piece.getType() == PIECE_TYPE.MAN)
 				if(man_move_possible(board, square, piece_square, piece))
 					isPossible = true;
@@ -96,16 +91,16 @@ public abstract class Rules {
 		return isPossible;
 	}
 	
-//	//returns true if the "piece" from "piece_squre" can capture anywhere
-//	private static boolean capture_possible(Board board, Square piece_square, Piece piece){
-//		boolean isPossible = false;
-//		
-//		for(int i = 0; i < board.getSquares().length && !isPossible; i++)
-//			if(capture_possible(board, board.getSquares()[i], piece_square, piece))
-//				isPossible = true;
-//		
-//		return isPossible;
-//	}
+	//returns true if the "piece" from "piece_squre" can capture anywhere
+	private static boolean capture_possible(Board board, Square piece_square, Piece piece){
+		boolean isPossible = false;
+		
+		for(int i = 0; i < board.getSquares().length && !isPossible; i++)
+			if(capture_possible(board, board.getSquares()[i], piece_square, piece))
+				isPossible = true;
+		
+		return isPossible;
+	}
 	
 	// returns true if the "piece" can capture from "piece_square" to the "square"
 	private static boolean capture_possible(Board board, Square square, Square piece_square, Piece piece){
@@ -121,115 +116,19 @@ public abstract class Rules {
 		return isPossible;
 	}
 	
-//	// returns true if the "piece" can capture from "piece_square" to the "square"
-//		private static boolean capture(Board board, Square square, Square piece_square, Piece piece){
-//			boolean isPossible = false;
-//			
-//			if(piece.getType() == PIECE_TYPE.MAN)
-//				if(man_capture(board, square, piece_square, piece))
-//					isPossible = true;
-//			if(piece.getType() == PIECE_TYPE.KING)
-//				if(king_capture(board, square, piece_square, piece))
-//					isPossible = true;
-//			
-//			return isPossible;
-//		}
-		
-		////////////////////////////////////////////////////////////////////////////////////////////
-		
-	
-	
-		// returns true if the "piece" can capture from "piece_square" to the "square"
+	// returns true if the "piece" can capture from "piece_square" to the "square"
 		private static boolean capture(Board board, Square square, Square piece_square, Piece piece){
 			boolean isPossible = false;
 			
-			if(metoda1(board, piece_square, piece).contains(square)){	//jeœli w square zawiera siê w liœcie pól o najwiêkszej liczbie biæ
-				if(piece.getType() == PIECE_TYPE.MAN)
-					if(man_capture(board, square, piece_square, piece))
-						isPossible = true;
-				if(piece.getType() == PIECE_TYPE.KING)
-					if(king_capture(board, square, piece_square, piece))
-						isPossible = true;
-			}
+			if(piece.getType() == PIECE_TYPE.MAN)
+				if(man_capture(board, square, piece_square, piece))
+					isPossible = true;
+			if(piece.getType() == PIECE_TYPE.KING)
+				if(king_capture(board, square, piece_square, piece))
+					isPossible = true;
 			
 			return isPossible;
 		}
-		
-		// returns true if the "piece" can capture from "piece_square" to the "square"
-		private static boolean capture_x(Board board, Square square, Square piece_square, Piece piece){
-			boolean isPossible = false;
-			
-				if(piece.getType() == PIECE_TYPE.MAN)
-					if(man_capture(board, square, piece_square, piece))
-						isPossible = true;
-				if(piece.getType() == PIECE_TYPE.KING)
-					if(king_capture(board, square, piece_square, piece))
-						isPossible = true;
-			
-			return isPossible;
-		}
-
-		//metoda zwracaj¹ca pola o najwiêkszej liczbie biæ
-		private static LinkedList<Square> metoda1(Board board, Square piece_square, Piece piece){
-			LinkedList<Square> result = new LinkedList<Square>();
-			
-			result = capture_possible(board, piece_square, piece); // result = mo¿liwe pola na które mo¿na zbiæ
-			metoda2(board, piece_square, piece, result);
-			
-			return result;
-		}
-		
-		//metoda która dostaje i oblicza maksymaln¹ liczbê biæ dla ka¿dego elementu i usuwa z listy wszyskie elementy o mniejszej liczbie biæ
-		private static int metoda2(Board board, Square piece_square, Piece piece, LinkedList<Square> list){
-			int result = 1;
-			Square square = null;
-			if(!list.isEmpty()){
-				Iterator<Square> it = list.iterator();
-				LinkedList<Integer> list2 = new LinkedList<Integer>();
-				
-				//metoda obliczaj¹ca liczbê biæ dla ka¿dego elementu
-				while(it.hasNext()){ 										//dla ka¿dego elementu
-					//oblicz maks liczbê biæ i zapisz do list2
-					Board b = board.clone();
-					square = it.next();
-					
-					capture_x(b, square, piece_square, piece);
-					list2.add(1 + metoda2(b, square, piece, capture_possible(board, square, piece)));
-					
-				}
-				
-				//wy³onienie najwiekszej liczby biæ i zapisanie tej wartoœci w result
-				for(int n : list2)
-					if(n > result)
-						result = n;
-				
-				//usuniêcie elementów o mniejszej liczbie biæ niz result(czyli najwiêkszej)
-				for(int i = 0; i < list.size(); i++){
-					if(list2.get(i) < result){
-						list.remove(i);
-						list2.remove(i);
-						i--;
-					}
-				}
-					
-			}
-			
-					
-			return result;
-		}
-		
-		//zwraca listê dostêpnych pól do bicia
-		private static LinkedList<Square> capture_possible(Board board, Square piece_square, Piece piece){
-			LinkedList<Square> capture_squares = new LinkedList<Square>();	// This list will contain squares where capture is possible??
-			
-			for(int i = 0; i < board.getSquares().length; i++)								//tutaj dodajê do listy wszystkie pola na które mo¿na zbiæ(zarówno dla pionka jak i dla królowej
-				if(capture_possible(board, board.getSquares()[i], piece_square, piece))
-					capture_squares.add(board.getSquares()[i]);			
-			
-			return capture_squares;
-		}
-		
-		///////////////////////////////////////////////////////////////////////////////////////////
 	
 	
 	//This method returns true if move from piece_square to the square is possible
@@ -249,7 +148,6 @@ public abstract class Rules {
 		return movePossible;
 	}
 	
-	//this method returns true if piece (PIECE_TYPE = MAN) can capture from piece_square to the square
 	private static boolean man_capture_possible(Board board, Square square, Square piece_square, Piece piece){
 		boolean capturePossible = false;
 		
@@ -275,7 +173,6 @@ public abstract class Rules {
 		return capturePossible;
 	}
 	
-	//this method returns true if piece (PIECE_TYPE = MAN) captured from piece_square to the square and execute this capture
 	private static boolean man_capture(Board board, Square square, Square piece_square, Piece piece){
 		boolean isCaptured = false;
 		
@@ -596,5 +493,6 @@ public abstract class Rules {
 			isEND = true;
 		return isEND;
 	}
+	
 	
 }
