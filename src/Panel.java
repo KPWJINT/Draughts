@@ -20,7 +20,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	Image image_avalible;
 	Image image_end;
 	
-	Board board;
+	final Board board;
 	int picture_size;
 	
 	ArrayList<Square> available_squares = new ArrayList<Square>();
@@ -34,6 +34,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		addMouseMotionListener(this);
 		
 		this.board = board;
+		Rules.board = board;
 		this.picture_size = square_length;
 		try
 		{
@@ -137,7 +138,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		if(piece_trace != null)
 				g2.drawImage(image_trace,(int)x_trace, (int)y_trace, this);
 		
-		if(Rules.is_end_of_the_game(board) && piece_trace == null)
+		if(Rules.is_end_of_the_game() && piece_trace == null)
 			g2.drawImage(image_end, 0, 0, this);						//set different location?
 	}
 
@@ -230,14 +231,14 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 		
 		if(piece_trace != null){
 			piece_trace.setPoint(e.getPoint());		//remember last place
-			available_squares.addAll(Rules.availableSquares(board, getSquare(piece_trace.getPoint()), piece_trace));
+			available_squares.addAll(Rules.availableSquares(getSquare(piece_trace.getPoint()), piece_trace));
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e){
 		if(piece_trace != null){
-			Rules.move(board, getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace);
+			Rules.move(getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace);
 		}	
 		piece_trace = null;
 		available_squares.removeAll(available_squares);
