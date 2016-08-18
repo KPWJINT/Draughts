@@ -29,30 +29,33 @@ public abstract class Rules {
 	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 	public static void move(Square square, Square piece_square ,Piece piece){
-		if(moveAvailable(square, piece_square, piece))
-			board.getSquares()[square.getID()].setPiece(piece);
-		else
-			board.getSquares()[piece_square.getID()].setPiece(piece);
+		
+		if(board != null && piece != null && square != null && piece_square != null){
+			if(availablePiecesMove().contains(piece))
+				board.getSquares()[square.getID()].setPiece(piece);
+			else
+				board.getSquares()[piece_square.getID()].setPiece(piece);
+			
+			//promotion and change turn conditions
+			if(piece_saved == null){
+				if(achieveLastPool(square, piece))
+					piece.setType(PIECE_TYPE.KING);
+				changeTurn();
+			}	
+		}				
 	}
 	
 	//square - square where you want to put piece, piece_square - square where the piece was before, piece - piece which you want to move
 	public static boolean moveAvailable(Square square, Square piece_square ,Piece piece){ 		
 		boolean isAvalible = false;
 
-		if(board != null && piece != null && square != null && piece_square != null){			//all arguments are not null and square is empty				
+		{						
 			if((piece.getOwner() == OWNER.WHITE && board.getTurn() == true) || piece.getOwner() == OWNER.BLACK && board.getTurn() == false){ 	//turn condition
 				if(capture(square, piece_square, piece))
 					isAvalible = true;
 				if(move_possible(square, piece_square, piece))
 					isAvalible = true;
 			}
-		}
-		
-		if(isAvalible == true){
-			changeTurn();
-			if(achieveLastPool(square, piece))
-				piece.setType(PIECE_TYPE.KING);
-			System.out.println(board.getTurn());
 		}
 			
 		return isAvalible;

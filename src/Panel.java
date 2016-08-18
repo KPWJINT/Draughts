@@ -238,7 +238,7 @@ public class Panel extends JPanel  implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseReleased(MouseEvent e){
 		if(piece_trace != null){
-			Rules.move(getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace);
+			Rules.move(getSquare(e.getPoint()),getSquare(piece_trace.getPoint()) ,piece_trace);		//do the move to this square
 		}	
 		piece_trace = null;
 		available_squares.removeAll(available_squares);
